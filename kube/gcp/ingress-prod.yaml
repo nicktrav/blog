@@ -1,0 +1,10 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-blog-prod
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: site
+spec:
+  backend:
+    serviceName: service-blog-prod
+    servicePort: 80

@@ -1,0 +1,32 @@
+steps:
+
+  # Webserver build
+- name: 'gcr.io/$PROJECT_ID/sbt'
+  args: ['sbt', 'assembly']
+  id: 'server-compile'
+  wait_for: ['-']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/server:$REVISION_ID', '-f', 'Dockerfile.server', '.']
+  id: 'server-build'
+  wait_for: ['server-compile']
+  # Tag the latest version as :latest.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/server:$REVISION_ID', 'gcr.io/$PROJECT_ID/server']
+  wait_for: ['server-build']
+
+  # Nginx build
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/nginx:$REVISION_ID', '-f', 'Dockerfile.nginx', '.']
+  id: 'nginx-build'
+  wait_for: ['-']
+  # Tag the latest version as :latest.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/nginx:$REVISION_ID', 'gcr.io/$PROJECT_ID/nginx']
+  wait_for: ['nginx-build']
+
+images: [
+  'gcr.io/$PROJECT_ID/server:$REVISION_ID',
+  'gcr.io/$PROJECT_ID/server:latest',
+  'gcr.io/$PROJECT_ID/nginx:$REVISION_ID',
+  'gcr.io/$PROJECT_ID/nginx:latest'
+  ]
