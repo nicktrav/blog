@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1 # for versions after 1.6.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: deployment-blog-dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog
+        env: dev
+    spec:
+      containers:
+      - name: nginx
+        image: nickt/blog-nginx:6b94e75dec486824b5c8d1e8cf6a09ad61e3e40e
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /til
+            port: 80
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
+      - name: webserver
+        image: nickt/blog-server:6b94e75dec486824b5c8d1e8cf6a09ad61e3e40e
+        imagePullPolicy: Never

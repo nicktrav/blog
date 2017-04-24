@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SHA=$(git rev-parse HEAD)
+
+# Build the project
+sbt assembly
+
+# Build dockerfiles and publsh locally
+pushd "$DIR/.."
+  docker build -t "nickt/blog-server:$SHA" -f "Dockerfile.server" .
+  docker build -t "nickt/blog-nginx:$SHA" -f "Dockerfile.nginx" .
+popd

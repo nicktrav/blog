@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1 # for versions after 1.6.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: deployment-blog-prod
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: blog
+        env: prod
+    spec:
+      containers:
+      - name: nginx
+        image: gcr.io/nicktravers-site/nginx:latest
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /til
+            port: 80
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
+      - name: server
+        image: gcr.io/nicktravers-site/server:latest
+        imagePullPolicy: Always

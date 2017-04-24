@@ -1,0 +1,32 @@
+steps:
+
+  # Webserver build
+- name: 'gcr.io/$PROJECT_ID/sbt'
+  args: ['sbt', 'assembly']
+  id: 'server-compile'
+  wait_for: ['-']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/server:$_SHA', '-f', 'Dockerfile.server', '.']
+  id: 'server-build'
+  wait_for: ['server-compile']
+  # Tag the latest version as :canary.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/server:$_SHA', 'gcr.io/$PROJECT_ID/server:canary']
+  wait_for: ['server-build']
+
+  # Nginx build
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/nginx:$_SHA', '-f', 'Dockerfile.nginx', '.']
+  id: 'nginx-build'
+  wait_for: ['-']
+  # Tag the latest version as :canary.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'gcr.io/$PROJECT_ID/nginx:$_SHA', 'gcr.io/$PROJECT_ID/nginx:canary']
+  wait_for: ['nginx-build']
+
+images: [
+  'gcr.io/$PROJECT_ID/server:$_SHA',
+  'gcr.io/$PROJECT_ID/server:canary',
+  'gcr.io/$PROJECT_ID/nginx:$_SHA',
+  'gcr.io/$PROJECT_ID/nginx:canary'
+  ]

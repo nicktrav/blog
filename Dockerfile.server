@@ -1,0 +1,11 @@
+FROM openjdk:8
+
+ADD target/scala-2.11/server.jar /app/
+ADD public /app/public
+
+WORKDIR /app
+EXPOSE 9000
+
+ENTRYPOINT ["java", "-jar", "server.jar"]
+
+# vi:syntax=dockerfile
