@@ -31,4 +31,8 @@ class Application @Inject() (environment: Environment) extends Controller {
       })
       .getOrElse(NotFound)
   }
+
+  def status = Action {
+    Ok
+  }
 }

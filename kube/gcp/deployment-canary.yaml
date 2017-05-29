@@ -18,12 +18,11 @@ spec:
           - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /til
-            port: 80
-          periodSeconds: 5
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 10
+            httpHeaders:
+              - name: Host
+                value: webserver
+            path: /_status
+            port: 9000
       - name: server
         image: gcr.io/nicktravers-site/server:canary
         imagePullPolicy: Always
