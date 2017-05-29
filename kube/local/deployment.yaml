@@ -12,18 +12,17 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nickt/blog-nginx:6b94e75dec486824b5c8d1e8cf6a09ad61e3e40e
+        image: nickt/blog-nginx:latest
         imagePullPolicy: Never
         ports:
           - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /til
-            port: 80
-          periodSeconds: 5
-          timeoutSeconds: 5
-          successThreshold: 1
-          failureThreshold: 10
+            httpHeaders:
+              - name: Host
+                value: webserver
+            path: /_status
+            port: 9000
       - name: webserver
-        image: nickt/blog-server:6b94e75dec486824b5c8d1e8cf6a09ad61e3e40e
+        image: nickt/blog-server:latest
         imagePullPolicy: Never

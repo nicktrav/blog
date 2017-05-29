@@ -10,4 +10,6 @@ sbt assembly
 pushd "$DIR/.."
   docker build -t "nickt/blog-server:$SHA" -f "Dockerfile.server" .
   docker build -t "nickt/blog-nginx:$SHA" -f "Dockerfile.nginx" .
+  docker tag "nickt/blog-server:$SHA" "nickt/blog-server"
+  docker tag "nickt/blog-nginx:$SHA" "nickt/blog-nginx"
 popd
