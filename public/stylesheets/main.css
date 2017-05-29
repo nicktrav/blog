@@ -106,6 +106,7 @@ blockquote q {
 
 li {
   margin-left: 1em;
+  margin: 10px 0;
 }
 
 a {

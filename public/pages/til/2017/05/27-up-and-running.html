@@ -3,5 +3,138 @@
 <em>May 27th, 2017</em>
 
 <p>It took me a little while, but I finally got this thing up and running!
+<i>Hello, world!?</i>
 
-<p>I'll add more to this as I get to it!
+<p>I thought building a site was going to be easy. Sure, it's simple to build
+something to host static pages built on top of WordPress in PHP, but that's so
+mid-2000's (<a href="https://en.wikipedia.org/wiki/LAMP_(software_bundle)" target="_blank">LAMP</a> anyone?!).
+I was up for more of a challenge when I started building this, so I picked some
+building blocks that satisfied the following:
+
+<ul>
+  <li><b>(Relative) Simplicity</b> - I needed to be able to hack something together
+    quickly and be able to iterate on it easily without my house of cards
+    falling over</li>
+
+  <li><b>Familiarity</b> - I wanted to write some code in a language that have a
+    passing familiarity with</li>
+
+  <li><b>Experimental</b> - part of putting this together was an excuse to pick up some
+    new tools and concepts that I don't have a chance to work with in my
+    day-job</li>
+
+  <li><b>Open source</b> - there's nothing worse that not being able to crack
+    something open and see how it works. All the buidling blocks of the site
+    need to be available to anyone else to pick up and use</li>
+</ul>
+
+<h3>Backend</h3>
+
+<p>A site (usually) needs a webserver backing it. Something to serve up the
+content to the clients that connect to it. While the initial goal is to serve
+up static content, I wanted to use somthing that was going to be a little more
+versatile and flexible if I wanted to experiment with something fancier in the
+future.
+
+<p>I use Java at work, so I'm confident working in the JVM ecosystem. The
+tooling and support is pretty extensive and mature, and it's easy to
+StackOverflow your way out of a problem if / when you get stuck. I've been
+learning <a href="https://www.scala-lang.org/" target="_blank">Scala</a> on the
+side for a while as an excuse to get my head out of the "everything is a noun"
+approach to software development in Java (read <a
+href="http://steve-yegge.blogspot.com/2006/03/execution-in-kingdom-of-nouns.html"
+target="_blank">this</a> if you haven't already), so wanted to get my teeth sunk
+into a decent project.
+
+<p>Googling "Scala" and "web development" will probably lead you to the <a
+  href="https://www.playframework.com/" target="_blank">Play framework</a>.
+It's pretty easy to use if you're like me and have used another MVC framework
+like <a href="http://rubyonrails.org/" target="_blank">Rails</a>. Given that
+you're writing Scala, it's all statically typed, incuding the HTML templates.
+Less of those gross runtime errors.
+
+<p>I've recently started doing some Golang at work, so maybe if I get sick of
+Play I might have a play around with porting some of this to Go. Who says I
+can't be irresponsible and do a re-write when I want to?!
+
+<p>I've slapped <a href="https://nginx.org/en/" target="_blank">Nginx</a> in
+front of the backends as a reverse proxy. It's 2017 and it's better than
+Apache. Sure, I'm not serving up thousands of requests a second, but we use it
+at work so I know a thing or two about how to configure it. It can cache things
+nicely, and terminate SSL (when I get around to it!).
+
+<h3>Frontend</h3>
+
+<p>While HTML was probably the "language" that got me into programming at an
+early age, building small web pages that I could run on the computer I'd built
+from parts I'd picked up at garage sales in the
+<a href="https://en.wikipedia.org/wiki/Bridgetown,_Western_Australia" target="_blank">
+small country town in which I grew up</a> (represent!), it's never really been
+a strong point. Javascript is gross. <b>#sorrynotsorry</b>.
+
+<p>Every week there's a new framework on Hacker News that all the cool kids are
+using. It's exhausting to keep up with. So I'm sticking to my roots here and
+the content for the site is nothing fancy. It's just static HTML with some CSS
+to make things look pretty.
+
+<p>Given the backend is Play / Scala, maybe I'll get around to checking out
+something like <a href="https://www.scala-js.org/" target="_blank">scala.js</a>
+... maybe.
+
+<h3>Hosting</h3>
+
+<p>I've always been a bit of a Google fan-boy, and have used <a
+  href="https://cloud.google.com/" target="_blank">GCP</a> for a while now,
+both at work and for various side projects, so this was a pretty easy choice.
+That said, you could probably throw this site up on AWS or Digial Ocean pretty
+easily.
+
+<p>I like how easy and fast it is to iterate on GCP relative to the
+competition.  I'm slowly coming around to the idea of "immutable
+infrastructure", where you can treat your VMs as immutable, expendable and
+ephemeral. If something stops working, spin up a replacement and keep moving.
+<a href="https://cloud.google.com/products/compute/" target="_blank">GCE</a> is
+pretty good for this, and you can have an instance up and SSH-able in less than
+a minute.
+
+<h3>Deployment</h3>
+
+<p>Ask any hipster what they're using these days for deploying their artisinal,
+hand-rolled, functional, stateless, reactive microservices and they'll probably
+drop the C-word. "Containers" are pretty much synonomous with <a
+href="https://www.docker.com/"target="_blank">Docker</a> these days (although
+obviously there are others - see <a href="https://linuxcontainers.org/" target="_blank">LXC</a>
+And <a href="https://coreos.com/rkt" target="_blank">Rkt</a> for two notable
+examples). Using Docker containers unlocks cool frameworks like
+<a href="https://kubernetes.io/" target="_blank">Kubernetes</a> for service
+discovery and deployment. We've got a pretty similar framework at Square,
+called <a href="https://github.com/square/p2" target="_blank">p2</a> that is
+<i>heavily</i> inspired by Kubernetes, so the concepts and abstractions are
+familiar to me, which is a bonus.
+
+<p>Google has a hosted Kubernetes service called <a
+  href="https://cloud.google.com/container-engine/" target="_blank">Google
+  Container Enginer (GKE)</a> which abstracts away the pain of adding and
+removing VMs from your cluster and getting them talking to one another.
+
+<p>Kubernetes is another tool I can add to the tool-belt. A bunch of companies
+are already using it (probably in production, but maybe they'd be reluctant to
+admit that openly). The open source community is huge, and the project is
+constantly evolving. No doubt things will look different in a month's time.
+There will be different abstractions to use. Hey - if I ever end up with a
+database backing this thing (god forbid), I'll be keen to checkout how
+Kubernetes deals with <a
+  href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/"
+  target="_blank">StatefulSets</a>!
+
+<p>So ... here we are. We've got the broad strokes of a website engraved in a
+single HTML document, <a href="https://github.com/nicktrav/blog"
+target="_blank">checked into a Github repo</a>, building and deploying on GCP.
+I know it works coz you're reading it, and I know a thing or two from a past
+life on how to scrape and analyze web logs to tell what kind of browser you're
+reading it from and where you are! ... or at least where the IP of your Tor
+exit node appears to be.
+
+<p>Stay tuned ... my creative juices have to refill. Writing is hard.
+
+<p><i>-nt</i>
