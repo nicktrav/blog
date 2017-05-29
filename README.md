@@ -41,10 +41,28 @@ This takes a while to expose the service the first time. Monitor progress with
 
 ### Updates
 
-Change the SHA in `./kube/gcp/deployment-prod.yaml` and run
+Ensure an image exists for the SHA that needs to be deployed:
 
 ```bash
-$ kubectl apply -f ./kube/gcp/deployment-prod.yaml
+$ PROJECT=$(gcloud config list | grep -E '^project' | sed -E 's/project = (.*)/\1/')
+$ gcloud container images list-tags gcr.io/$PROJECT/server
+$ gcloud container images list-tags gcr.io/$PROJECT/nginx
+```
+
+Check status of deployment:
+
+```bash
+$ kubectl describe deployment deployment-blog-prod
+```
+
+Update the deployment with the new image(s):
+
+```bash
+# Webserver
+$ kubectl set image deployment/deployment-blog-prod nginx=gcr.io/$PROJECT/nginx:SHA
+
+# Nginx
+$ kubectl set image deployment/deployment-blog-prod server=gcr.io/$PROJECT/server:SHA
 ```
 
 Monitor status of the rollout with:
