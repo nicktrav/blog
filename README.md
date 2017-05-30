@@ -41,6 +41,13 @@ This takes a while to expose the service the first time. Monitor progress with
 
 ### Updates
 
+Connect to the cluster:
+
+```bash
+$ gcloud container clusters get-credentials site \
+    --zone $ZONE --project $PROJECT
+```
+
 Ensure an image exists for the SHA that needs to be deployed:
 
 ```bash
