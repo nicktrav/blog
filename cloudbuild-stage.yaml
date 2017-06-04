@@ -9,9 +9,9 @@ steps:
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/server:$_SHA', '-f', 'Dockerfile.server', '.']
   id: 'server-build'
   wait_for: ['server-compile']
-  # Tag the latest version as :canary.
+  # Tag the latest version as :stage.
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/server:$_SHA', 'gcr.io/$PROJECT_ID/server:canary']
+  args: ['tag', 'gcr.io/$PROJECT_ID/server:$_SHA', 'gcr.io/$PROJECT_ID/server:stage']
   wait_for: ['server-build']
 
   # Nginx build
@@ -19,14 +19,14 @@ steps:
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/nginx:$_SHA', '-f', 'Dockerfile.nginx', '.']
   id: 'nginx-build'
   wait_for: ['-']
-  # Tag the latest version as :canary.
+  # Tag the latest version as :stage.
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/nginx:$_SHA', 'gcr.io/$PROJECT_ID/nginx:canary']
+  args: ['tag', 'gcr.io/$PROJECT_ID/nginx:$_SHA', 'gcr.io/$PROJECT_ID/nginx:stage']
   wait_for: ['nginx-build']
 
 images: [
   'gcr.io/$PROJECT_ID/server:$_SHA',
-  'gcr.io/$PROJECT_ID/server:canary',
+  'gcr.io/$PROJECT_ID/server:stage',
   'gcr.io/$PROJECT_ID/nginx:$_SHA',
-  'gcr.io/$PROJECT_ID/nginx:canary'
+  'gcr.io/$PROJECT_ID/nginx:stage'
   ]

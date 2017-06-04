@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1 # for versions after 1.6.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: deployment-blog-stage
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blog
+        env: stage
+    spec:
+      containers:
+      - name: nginx
+        image: gcr.io/nicktravers-site/nginx:stage
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /_status
+            port: 80
+            scheme: HTTP
+          periodSeconds: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 10
+        volumeMounts:
+          - name: tls
+            mountPath: /etc/tls
+      - name: server
+        image: gcr.io/nicktravers-site/server:stage
+        imagePullPolicy: Always
+      volumes:
+        - name: tls
+          secret:
+            secretName: stage.nicktrave.rs
