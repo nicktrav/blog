@@ -1,8 +1,0 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: ingress-blog-canary
-spec:
-  backend:
-    serviceName: service-blog-canary
-    servicePort: 80

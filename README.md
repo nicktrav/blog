@@ -79,6 +79,19 @@ $ kubectl get deployment deployment-blog-prod
 $ kubectl describe deployment deployment-blog-prod
 ```
 
+### Staging builds
+
+To test out changes that have yet to be merged to master, use the following:
+
+```bash
+$ gcloud container builds submit \
+  --config cloudbuild-stage.yaml \
+  --substitutions=_SHA=$(git rev-parse HEAD) .
+```
+
+This will build set of containers with for the current SHA, and also labeled
+with `stage`.
+
 ## Local deployment (standalone)
 
 The webserver can be started with the following:
