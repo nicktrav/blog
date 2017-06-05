@@ -123,6 +123,10 @@ textarea {
   font-family: "Inconsolata", monospace;
 }
 
+pre:first-line {
+    line-height: 0px;
+}
+
 code {
   line-height: 1em;
 }
@@ -134,7 +138,7 @@ textarea {
 body > pre {
   border-left: solid 2px #999;
   padding-left: 16px;
-  margin: 2em 0 2em -18px;
+  margin: 1em 0 1em 0;
   overflow-x: scroll;
 }
 
