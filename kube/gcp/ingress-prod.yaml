@@ -5,6 +5,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: site
 spec:
+  tls:
+   - secretName: nicktrave.rs
   backend:
     serviceName: service-blog-prod
     servicePort: 80
