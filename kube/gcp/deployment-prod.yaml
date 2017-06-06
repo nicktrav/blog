@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: deployment-blog-prod
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -18,11 +18,20 @@ spec:
           - containerPort: 80
         readinessProbe:
           httpGet:
-            httpHeaders:
-              - name: Host
-                value: webserver
             path: /_status
-            port: 9000
+            port: 80
+            scheme: HTTP
+          periodSeconds: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 10
+        volumeMounts:
+          - name: tls
+            mountPath: /etc/tls
       - name: server
         image: gcr.io/nicktravers-site/server:latest
         imagePullPolicy: Always
+      volumes:
+        - name: tls
+          secret:
+            secretName: nicktrave.rs
