@@ -69,6 +69,7 @@ public class TilHandler {
   private static Response okResponse(Object content) {
     return Response
         .status(Response.Status.OK)
+        .cacheControl(HttpUtils.CACHE_CONTROL)
         .entity(content)
         .build();
   }

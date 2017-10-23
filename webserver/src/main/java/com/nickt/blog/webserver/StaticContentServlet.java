@@ -11,11 +11,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 
 /**
  * Handler for static content, served from the {@code /static} path.
  */
-// TODO: Add caching
 @Singleton
 public class StaticContentServlet extends HttpServlet {
 
@@ -43,6 +43,7 @@ public class StaticContentServlet extends HttpServlet {
     }
 
     response.setContentType(mimeMap.getContentType(path));
+    response.setHeader(HttpHeaders.CACHE_CONTROL, HttpUtils.CACHE_CONTROL.toString());
 
     ServletOutputStream outputStream = response.getOutputStream();
     ByteStreams.copy(inputStream, outputStream);
