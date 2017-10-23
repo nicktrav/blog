@@ -1,7 +1,6 @@
 FROM openjdk:8
 
-ADD target/scala-2.11/server.jar /app/
-ADD public /app/public
+ADD webserver/target/server.jar /app/
 
 WORKDIR /app
 EXPOSE 9000
