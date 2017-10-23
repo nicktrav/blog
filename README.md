@@ -1,50 +1,58 @@
 # nicktrave.rs
 
-// TODO(nickt)
+My website, accessible at [nicktrave.rs](https://nicktrave.rs).
 
 ## Production deployment (GCP)
 
 ### Initial setup
 
+0. Setup the project id and zone
+
+```bash
+export PROJECT=your-project
+export ZONE=your-gcp-zone         # e.g. us-central1-b
+export SITE=your-gke-cluster
+```
+
 1. Connect to the cluster
 
-  ```bash
-  $ gcloud container clusters get-credentials site \
-      --zone ZONE --project PROJECT
-  ```
+```bash
+$ gcloud container clusters get-credentials $SITE \
+  --zone $ZONE --project $PROJECT
+```
 
 2. Set up a deployment
 
-  ```bash
-  $ kubectl create -f ./kube/gcp/deployment-prod.yaml
-  ```
+```bash
+$ kubectl create -f ./kube/gcp/deployment-prod.yaml
+```
 
 3. Expose the service
 
-  ```bash
-  $ kubectl expose deployment deployment-blog-prod \
-      --name=service-blog-prod \
-      --type=NodePort
-  ```
+```bash
+$ kubectl expose deployment deployment-blog-prod \
+  --name=service-blog-prod \
+  --type=NodePort
+```
 
 3. Allow ingress traffic to the service via a loadbalancer
 
-  ```bash
-  $ kubectl create -f ./kube/gcp/ingress-prod.yaml
-  ```
+```bash
+$ kubectl create -f ./kube/gcp/ingress-prod.yaml
+```
 
 This takes a while to expose the service the first time. Monitor progress with
 
-  ```bash
-  $ kubectl describe ingress ingress-blog-prod
-  ```
+```bash
+$ kubectl describe ingress ingress-blog-prod
+```
 
 ### Updates
 
 Connect to the cluster:
 
 ```bash
-$ gcloud container clusters get-credentials site \
+$ gcloud container clusters get-credentials $SITE \
     --zone $ZONE --project $PROJECT
 ```
 

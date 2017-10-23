@@ -1,8 +1,8 @@
 steps:
 
   # Webserver build
-- name: 'gcr.io/$PROJECT_ID/sbt'
-  args: ['sbt', 'assembly']
+- name: 'gcr.io/cloud-builders/java/mvn'
+  args: ['clean', 'package']
   id: 'server-compile'
   wait_for: ['-']
 - name: 'gcr.io/cloud-builders/docker'
