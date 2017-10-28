@@ -4,12 +4,12 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
-import com.google.inject.multibindings.Multibinder;
+import com.google.inject.TypeLiteral;
 import com.google.inject.servlet.ServletModule;
 import com.nickt.blog.container.LifecycleModule;
 import com.nickt.blog.container.SimpleLifecycleListener;
-import com.sun.jersey.guice.JerseyServletModule;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,7 +18,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
@@ -33,22 +35,16 @@ public class GenericServerModule extends AbstractModule {
   private static final int SHUTDOWN_TIMEOUT_SECONDS = 60;
 
   @Override protected void configure() {
-    bind(MustacheFactory.class).toInstance(new DefaultMustacheFactory("templates"));
-
-    Multibinder.newSetBinder(binder(), Class.class, Providers.class);
-    Multibinder<Class> resourceBinder = Multibinder.newSetBinder(binder(), Class.class,
-        Resources.class);
-
-    resourceBinder.addBinding().toInstance(RootHandler.class);
-    resourceBinder.addBinding().toInstance(TilHandler.class);
-
-    install(new JerseyServletModule());
-    install(new ServletModule() {
-      @Override protected void configureServlets() {
-        serve("/static/*").with(StaticContentServlet.class);
-        serve("/*").with(GuiceContainer.class);
+    install(new ServletModule());
+    install(new AbstractGuiceJerseyModule() {
+      @Override protected void configure() {
+        bindClass(RootHandler.class);
+        bindClass(TilHandler.class);
       }
     });
+
+    Provider<Injector> injectorProvider = getProvider(Injector.class);
+    bind(new TypeLiteral<Supplier<Injector>>() {}).toInstance(injectorProvider::get);
 
     install(new LifecycleModule() {
       @Override protected void configureLifecycleListeners() {
@@ -56,6 +52,7 @@ public class GenericServerModule extends AbstractModule {
       }
     });
 
+    bind(MustacheFactory.class).toInstance(new DefaultMustacheFactory("templates"));
     bind(GenericServer.class).in(Singleton.class);
   }
 
