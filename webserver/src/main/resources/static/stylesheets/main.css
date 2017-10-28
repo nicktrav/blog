@@ -7,9 +7,9 @@ body {
   color: #333;
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 16px;
-  line-height: 1.2em;
+  line-height: 1.5em;
   margin: 1em auto 4em auto;
-  max-width: 720px;
+  max-width: 620px;
   padding: 0 18px;
   position: relative;
 }
@@ -39,7 +39,7 @@ h1 {
   font-size: 64px;
   font-weight: 300;
   letter-spacing: -2px;
-  line-height: 1em;
+  line-height: 1.5em;
   margin: .5em 0;
 }
 
@@ -85,7 +85,7 @@ body > p,
 body > ul,
 body > aside,
 body > blockquote {
-  max-width: 720px;
+  max-width: 620px;
 }
 
 body > p.figure {
@@ -104,9 +104,13 @@ blockquote q {
   font-style: oblique;
 }
 
+ul {
+  margin: -0.5em 0 0 -0.5em;
+}
+
 li {
-  margin-left: 1em;
-  margin: 10px 0;
+  position: relative;
+  left: -10px;
 }
 
 a {
@@ -208,6 +212,14 @@ blockquote q:after {
   border-bottom: solid 1px rgba(204,204,119,0.6);
   padding: 18px;
   margin: 2em -18px 0 -18px;
+}
+
+td.row-left {
+  width: 10em
+}
+
+td.row-pad {
+  padding-right: 0.25em
 }
 
 @media (min-width: 761px) {
