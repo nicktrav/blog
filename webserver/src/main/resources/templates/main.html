@@ -1,5 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="author" content="Nick Travers">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
   <link rel="stylesheet" href="/static/stylesheets/main.css">
   <link rel="stylesheet" href="/static/stylesheets/mono-blue.css">
@@ -11,6 +17,16 @@
 </head>
 
 <body>
-  {{{ body }}}
+  <header>
+    <aside><a href="/">Home</a></aside>
+  </header>
+  <div>
+    <div>
+      {{{ body }}}
+    </div>
+    <footer role="contentinfo">
+      <span class="credit">&copy; Nick Travers</span>
+    </footer>
+  </div>
 </body>
 </html>
