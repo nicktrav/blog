@@ -1,9 +1,12 @@
 package com.nickt.blog.webserver;
 
+import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
 import com.nickt.blog.webserver.GenericServerModule.JettyThreadPool;
 import java.util.EnumSet;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +18,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * Generic Jetty webserver.
@@ -32,7 +35,8 @@ class GenericServer {
 
   private volatile Server server;
 
-  @Inject GenericServer(@JettyThreadPool ThreadPoolExecutor executor, GuiceFilter filter) {
+  @Inject GenericServer(@JettyThreadPool ThreadPoolExecutor executor,
+      Supplier<Injector> injectorSupplier) {
     this.server = new Server(new SizedExecutorThreadPool(executor));
 
     HttpConfiguration httpConfig = new HttpConfiguration();
@@ -41,11 +45,23 @@ class GenericServer {
     server.setConnectors(new ServerConnector[] {httpConnector});
 
     HandlerCollection handlers = new HandlerCollection();
-    ServletContextHandler servlets = new ServletContextHandler();
-    servlets.setContextPath("/");
-    servlets.addFilter(new FilterHolder(filter), "/*", EnumSet.allOf(DispatcherType.class));
-    servlets.addServlet(DefaultServlet.class, "/");
-    handlers.addHandler(servlets);
+
+    ServletHolder holder = new ServletHolder(ServletContainer.class);
+    holder.setInitParameter("javax.ws.rs.Application", GuiceJerseyResourceConfig.class.getName());
+
+    WebAppContext webAppContext = new WebAppContext();
+    webAppContext.addFilter(GuiceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+    webAppContext.addServlet(holder, "/*");
+    webAppContext.setResourceBase("/");
+    webAppContext.setContextPath("/");
+    webAppContext.addEventListener(new GuiceServletContextListener() {
+      @Override
+      protected Injector getInjector() {
+        return injectorSupplier.get();
+      }
+    });
+    webAppContext.setServer(server);
+    handlers.addHandler(webAppContext);
 
     RequestLogHandler loggingHandler = new RequestLogHandler();
     loggingHandler.setRequestLog((request, response) -> {
