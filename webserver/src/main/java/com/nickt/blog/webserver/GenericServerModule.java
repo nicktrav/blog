@@ -35,7 +35,11 @@ public class GenericServerModule extends AbstractModule {
   private static final int SHUTDOWN_TIMEOUT_SECONDS = 60;
 
   @Override protected void configure() {
-    install(new ServletModule());
+    install(new ServletModule() {
+      @Override protected void configureServlets() {
+        serve("/static/*").with(StaticContentServlet.class);
+      }
+    });
     install(new AbstractGuiceJerseyModule() {
       @Override protected void configure() {
         bindClass(RootHandler.class);
