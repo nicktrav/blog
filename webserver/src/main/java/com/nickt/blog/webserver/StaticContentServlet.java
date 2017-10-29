@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
@@ -12,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 
 /**
@@ -23,6 +25,7 @@ public class StaticContentServlet extends HttpServlet {
   private static final String MIME_TYPES_PATH = "/mime.types";
   private static final String STATIC_PATH = "/static";
   private static final String GZIP = "gzip";
+  private static final CacheControl CACHE_CONTROL = HttpUtils.cacheControlMaxAge(7, TimeUnit.DAYS);
 
   private final FileTypeMap mimeMap;
 
@@ -45,7 +48,7 @@ public class StaticContentServlet extends HttpServlet {
     }
 
     response.setContentType(mimeMap.getContentType(path));
-    response.setHeader(HttpHeaders.CACHE_CONTROL, HttpUtils.CACHE_CONTROL.toString());
+    response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL.toString());
 
     OutputStream responseStream = response.getOutputStream();
 
