@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
 
 /**
@@ -24,6 +26,7 @@ public class TilHandler {
 
   private static final String TEMPLATE = "main.html";
   private static final String PATH_PREFIX = "/pages/til";
+  private static final CacheControl CACHE_CONTROL = HttpUtils.cacheControlMaxAge(1, TimeUnit.DAYS);
 
   private final Mustache template;
 
@@ -69,7 +72,7 @@ public class TilHandler {
   private static Response okResponse(Object content) {
     return Response
         .status(Response.Status.OK)
-        .cacheControl(HttpUtils.CACHE_CONTROL)
+        .cacheControl(CACHE_CONTROL)
         .entity(content)
         .build();
   }

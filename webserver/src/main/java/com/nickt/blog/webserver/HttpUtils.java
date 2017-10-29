@@ -1,5 +1,6 @@
 package com.nickt.blog.webserver;
 
+import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.CacheControl;
 
 /**
@@ -7,11 +8,14 @@ import javax.ws.rs.core.CacheControl;
  */
 class HttpUtils {
 
-  private static final int CACHE_CONTROL_MAX_AGE_SECONDS = 86400; // 1 day
+  /**
+   * Returns a {@link CacheControl} for the given {@code maxAge}.
+   */
+  static CacheControl cacheControlMaxAge(long maxAge, TimeUnit timeUnit) {
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMaxAge(Math.toIntExact(timeUnit.toSeconds(maxAge)));
 
-  static CacheControl CACHE_CONTROL = new CacheControl();
-  static {
-    CACHE_CONTROL.setMaxAge(CACHE_CONTROL_MAX_AGE_SECONDS);
+    return cacheControl;
   }
 
   // Static helper class
