@@ -3,11 +3,12 @@ package com.nickt.blog.webserver;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.GZIPOutputStream;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ public class StaticContentServlet extends HttpServlet {
 
   private static final String MIME_TYPES_PATH = "/mime.types";
   private static final String STATIC_PATH = "/static";
+  private static final String GZIP = "gzip";
 
   private final FileTypeMap mimeMap;
 
@@ -45,8 +47,16 @@ public class StaticContentServlet extends HttpServlet {
     response.setContentType(mimeMap.getContentType(path));
     response.setHeader(HttpHeaders.CACHE_CONTROL, HttpUtils.CACHE_CONTROL.toString());
 
-    ServletOutputStream outputStream = response.getOutputStream();
-    ByteStreams.copy(inputStream, outputStream);
-    outputStream.close();
+    OutputStream responseStream = response.getOutputStream();
+
+    // Compress as GZIP if requested
+    String acceptHeader = request.getHeader(HttpHeaders.ACCEPT_ENCODING);
+    if (acceptHeader != null && acceptHeader.contains(GZIP)) {
+      response.setHeader(HttpHeaders.CONTENT_ENCODING, GZIP);
+      responseStream = new GZIPOutputStream(responseStream);
+    }
+
+    ByteStreams.copy(inputStream, responseStream);
+    responseStream.close();
   }
 }
