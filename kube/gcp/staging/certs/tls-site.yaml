@@ -1,10 +1,10 @@
 apiVersion: "stable.hightower.com/v1"
 kind: "Certificate"
 metadata:
-  name: "stage-nicktrave-dot-rs"
+  name: "nicktrave-dot-rs"
 spec:
   domain: "stage.nicktrave.rs"
   email: "n.e.travers@gmail.com"
   provider: "googledns"
-  secret: "nicktravers-dns"
+  secret: "dns"
   secretKey: "service-account.json"
