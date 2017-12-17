@@ -7,7 +7,8 @@ My website, accessible at [nicktrave.rs](https://nicktrave.rs).
 The webserver can be started with the following:
 
 ```bash
-$ sbt ~run
+$ mvn clean package
+$ java -jar webserver/target/server.jar
 $ open http://localhost:9000
 ```
 
