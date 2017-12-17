@@ -2,104 +2,6 @@
 
 My website, accessible at [nicktrave.rs](https://nicktrave.rs).
 
-## Production deployment (GCP)
-
-### Initial setup
-
-0. Setup the project id and zone
-
-```bash
-export PROJECT=your-project
-export ZONE=your-gcp-zone         # e.g. us-central1-b
-export SITE=your-gke-cluster
-```
-
-1. Connect to the cluster
-
-```bash
-$ gcloud container clusters get-credentials $SITE \
-  --zone $ZONE --project $PROJECT
-```
-
-2. Set up a deployment
-
-```bash
-$ kubectl create -f ./kube/gcp/deployment-prod.yaml
-```
-
-3. Expose the service
-
-```bash
-$ kubectl expose deployment deployment-blog-prod \
-  --name=service-blog-prod \
-  --type=NodePort
-```
-
-3. Allow ingress traffic to the service via a loadbalancer
-
-```bash
-$ kubectl create -f ./kube/gcp/ingress-prod.yaml
-```
-
-This takes a while to expose the service the first time. Monitor progress with
-
-```bash
-$ kubectl describe ingress ingress-blog-prod
-```
-
-### Updates
-
-Connect to the cluster:
-
-```bash
-$ gcloud container clusters get-credentials $SITE \
-    --zone $ZONE --project $PROJECT
-```
-
-Ensure an image exists for the SHA that needs to be deployed:
-
-```bash
-$ PROJECT=$(gcloud config list | grep -E '^project' | sed -E 's/project = (.*)/\1/')
-$ gcloud container images list-tags gcr.io/$PROJECT/server
-$ gcloud container images list-tags gcr.io/$PROJECT/nginx
-```
-
-Check status of deployment:
-
-```bash
-$ kubectl describe deployment deployment-blog-prod
-```
-
-Update the deployment with the new image(s):
-
-```bash
-# Webserver
-$ kubectl set image deployment/deployment-blog-prod nginx=gcr.io/$PROJECT/nginx:SHA
-
-# Nginx
-$ kubectl set image deployment/deployment-blog-prod server=gcr.io/$PROJECT/server:SHA
-```
-
-Monitor status of the rollout with:
-
-```bash
-$ kubectl get deployment deployment-blog-prod
-$ kubectl describe deployment deployment-blog-prod
-```
-
-### Staging builds
-
-To test out changes that have yet to be merged to master, use the following:
-
-```bash
-$ gcloud container builds submit \
-  --config cloudbuild-stage.yaml \
-  --substitutions=_SHA=$(git rev-parse HEAD) .
-```
-
-This will build set of containers with for the current SHA, and also labeled
-with `stage`.
-
 ## Local deployment (standalone)
 
 The webserver can be started with the following:
@@ -188,4 +90,105 @@ minikube), run the following:
 
 ```bash
 $ eval $(docker-machine env -u)
+```
+
+## Staging (GCP)
+
+Follow the steps outlined in the [staging README](kube/gcp/staging/README.md)
+to get a cluster up and running.
+
+To test out changes that have yet to be merged to master, use the following:
+
+```bash
+$ gcloud container builds submit \
+  --config cloudbuild-stage.yaml \
+  --substitutions=_SHA=$(git rev-parse HEAD) .
+```
+
+This will build set of containers with for the current SHA, and also labeled
+with `stage`.
+
+## Production (GCP)
+
+### Initial setup
+
+0. Setup the project id and zone
+
+```bash
+export PROJECT=your-project
+export ZONE=your-gcp-zone         # e.g. us-central1-b
+export SITE=your-gke-cluster
+```
+
+1. Connect to the cluster
+
+```bash
+$ gcloud container clusters get-credentials $SITE \
+  --zone $ZONE --project $PROJECT
+```
+
+2. Set up a deployment
+
+```bash
+$ kubectl create -f ./kube/gcp/deployment-prod.yaml
+```
+
+3. Expose the service
+
+```bash
+$ kubectl expose deployment deployment-blog-prod \
+  --name=service-blog-prod \
+  --type=NodePort
+```
+
+3. Allow ingress traffic to the service via a load-balancer
+
+```bash
+$ kubectl create -f ./kube/gcp/ingress-prod.yaml
+```
+
+This takes a while to expose the service the first time. Monitor progress with
+
+```bash
+$ kubectl describe ingress ingress-blog-prod
+```
+
+### Updates
+
+Connect to the cluster:
+
+```bash
+$ gcloud container clusters get-credentials $SITE \
+    --zone $ZONE --project $PROJECT
+```
+
+Ensure an image exists for the SHA that needs to be deployed:
+
+```bash
+$ PROJECT=$(gcloud config list | grep -E '^project' | sed -E 's/project = (.*)/\1/')
+$ gcloud container images list-tags gcr.io/$PROJECT/server
+$ gcloud container images list-tags gcr.io/$PROJECT/nginx
+```
+
+Check status of deployment:
+
+```bash
+$ kubectl describe deployment deployment-blog-prod
+```
+
+Update the deployment with the new image(s):
+
+```bash
+# Webserver
+$ kubectl set image deployment/deployment-blog-prod nginx=gcr.io/$PROJECT/nginx:SHA
+
+# Nginx
+$ kubectl set image deployment/deployment-blog-prod server=gcr.io/$PROJECT/server:SHA
+```
+
+Monitor status of the rollout with:
+
+```bash
+$ kubectl get deployment deployment-blog-prod
+$ kubectl describe deployment deployment-blog-prod
 ```

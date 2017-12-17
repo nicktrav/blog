@@ -1,7 +1,7 @@
-apiVersion: extensions/v1beta1 # for versions after 1.6.0 use apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: deployment-blog-stage
+  name: webserver
 spec:
   replicas: 1
   strategy:
@@ -12,11 +12,10 @@ spec:
     metadata:
       labels:
         app: blog
-        env: stage
     spec:
       containers:
       - name: nginx
-        image: gcr.io/nicktravers-site/nginx:stage
+        image: gcr.io/nicktravers-site/nginx:SHA
         imagePullPolicy: Always
         ports:
           - containerPort: 80
@@ -33,9 +32,22 @@ spec:
           - name: tls
             mountPath: /etc/tls
       - name: server
-        image: gcr.io/nicktravers-site/server:stage
+        image: gcr.io/nicktravers-site/server:SHA
         imagePullPolicy: Always
       volumes:
         - name: tls
           secret:
             secretName: stage.nicktrave.rs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-svc
+spec:
+  ports:
+     -  port: 8080
+        protocol: TCP
+        targetPort: 80
+  selector:
+    app: blog
+  type: NodePort
