@@ -31,9 +31,23 @@ spec:
         volumeMounts:
           - name: tls
             mountPath: /etc/tls
+        resources:
+          limits:
+            cpu: 25m
+            memory: 250Mi
+          requests:
+            cpu: 25m
+            memory: 250Mi
       - name: server
         image: gcr.io/nicktravers-site/server:SHA
         imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 25m
+            memory: 500Mi
+          requests:
+            cpu: 25m
+            memory: 500Mi
       volumes:
         - name: tls
           secret:
