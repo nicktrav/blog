@@ -1,10 +1,11 @@
-apiVersion: "stable.hightower.com/v1"
+apiVersion: "stable.k8s.psg.io/v1"
 kind: "Certificate"
 metadata:
   name: "nicktrave-dot-rs"
+  labels:
+    stable.k8s.psg.io/kcm.class: "default"
 spec:
   domain: "stage.nicktrave.rs"
   email: "n.e.travers@gmail.com"
-  provider: "googledns"
-  secret: "dns"
-  secretKey: "service-account.json"
+  provider: "googlecloud"
+  secretName: "tls-site"

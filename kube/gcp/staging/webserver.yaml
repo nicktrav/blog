@@ -51,7 +51,7 @@ spec:
       volumes:
         - name: tls
           secret:
-            secretName: stage.nicktrave.rs
+            secretName: tls-site
 ---
 apiVersion: v1
 kind: Service
