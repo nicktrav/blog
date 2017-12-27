@@ -8,7 +8,7 @@ locally, and add it to the cluster:
 ```
 $ kubectl create secret generic dns \
     --from-file=/path/to/service-account.json
-$ kubectl describe secret gns
+$ kubectl describe secret dns
 ```
 
 Create a persistent volume for the certificates:
