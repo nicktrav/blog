@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: blog
+    spec:
+      containers:
+      - name: nginx
+        image: gcr.io/nicktravers-site/nginx:1620ff3288d4c7b2bb703b49197b1b0f3ea59781
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /_status
+            port: 80
+            scheme: HTTP
+          periodSeconds: 1
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 10
+        volumeMounts:
+          - name: tls
+            mountPath: /etc/tls
+        resources:
+          limits:
+            cpu: 25m
+            memory: 250Mi
+          requests:
+            cpu: 25m
+            memory: 250Mi
+      - name: server
+        image: gcr.io/nicktravers-site/server:1620ff3288d4c7b2bb703b49197b1b0f3ea59781
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 25m
+            memory: 500Mi
+          requests:
+            cpu: 25m
+            memory: 500Mi
+      volumes:
+        - name: tls
+          secret:
+            secretName: tls-site
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-svc
+spec:
+  ports:
+     -  port: 8080
+        protocol: TCP
+        targetPort: 80
+  selector:
+    app: blog
+  type: NodePort

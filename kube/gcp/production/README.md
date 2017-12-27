@@ -14,25 +14,25 @@ $ kubectl describe secret dns
 Create a persistent volume for the certificates:
 
 ```
-$ gcloud compute disks create kube-cert-manager-staging --size 10GB
+$ gcloud compute disks create kube-cert-manager --size 10GB
 ```
 
 Create the "Certificate" abstraction:
 
 ```
-$ kubectl create -f kube/gcp/staging/certs/certificate.yaml
+$ kubectl create -f kube/gcp/production/certs/certificate.yaml
 ```
 
 Deploy the certificate manager:
 
 ```
-$ kubectl create -f kube/gcp/staging/certs/kube-cert-manager.yaml
+$ kubectl create -f kube/gcp/production/certs/kube-cert-manager.yaml
 ```
 
 Generate TLS certificate and key:
 
 ```
-$ kubectl create -f kube/gcp/staging/certs/tls-site.yaml
+$ kubectl create -f kube/gcp/production/certs/tls-site.yaml
 ```
 
 Create a Diffie-Hellman group to use, and upload as a secret:
@@ -56,7 +56,7 @@ $ gcloud container images list-tags gcr.io/nicktravers-site/nginx
 ```
 
 ```
-$ kubectl create -f kube/gcp/staging/webserver.yaml
+$ kubectl create -f kube/gcp/production/webserver.yaml
 ```
 
 ### Load balancer
@@ -64,18 +64,18 @@ $ kubectl create -f kube/gcp/staging/webserver.yaml
 Set up a default backend to serve 404s for missing routes:
 
 ```
-$ kubectl create -f kube/gcp/staging/load-balancer/default-backend.yaml
+$ kubectl create -f kube/gcp/production/load-balancer/default-backend.yaml
 ```
 
 Deploy the nginx-controller. Be sure to update the IP to a previously reserved
 static IP.
 
 ```
-$ kubectl create -f kube/gcp/staging/load-balancer/nginx-controller.yaml
+$ kubectl create -f kube/gcp/production/load-balancer/nginx-controller.yaml
 ```
 
 Deploy the ingress rules to map traffic on all routes to the webserver backend.
 
 ```
-$ kubectl create -f kube/gcp/staging/load-balancer/ingress.yaml
+$ kubectl create -f kube/gcp/production/load-balancer/ingress.yaml
 ```
