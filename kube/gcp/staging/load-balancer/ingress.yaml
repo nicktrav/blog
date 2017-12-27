@@ -9,7 +9,7 @@ spec:
   tls:
     - hosts:
       - stage.nicktrave.rs
-      secretName: stage.nicktrave.rs
+      secretName: tls-site
   rules:
   - host: stage.nicktrave.rs
     http:

@@ -8,28 +8,34 @@ spec:
   replicas: 1
   template:
     metadata:
-      name: kube-cert-manager
       labels:
         app: kube-cert-manager
+      name: kube-cert-manager
     spec:
       containers:
         - name: kube-cert-manager
-          image: gcr.io/hightowerlabs/kube-cert-manager:0.5.0
-          imagePullPolicy: Always
+          image: palmstonegames/kube-cert-manager:0.3.1
           args:
-            - "-data-dir=/var/lib/cert-manager" 
+            - "-data-dir=/var/lib/cert-manager"
             - "-acme-url=https://acme-v01.api.letsencrypt.org/directory"
-            - "-sync-interval=30"
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /secrets/service-account.json
+            - name: GCE_PROJECT
+              value: nicktravers-site
           volumeMounts:
             - name: data
               mountPath: /var/lib/cert-manager
-        - name: kubectl
-          image: gcr.io/google_containers/hyperkube:v1.5.2
-          command:
-            - "/hyperkube"
-          args:
-            - "kubectl"
-            - "proxy"
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+        - name: kubectl-proxy
+          image: palmstonegames/kubectl-proxy:1.4.0
       volumes:
-        - name: "data"
-          emptyDir: {}
+        - name: data
+          gcePersistentDisk:
+            pdName: kube-cert-manager-staging
+            fsType: ext4
+        - name: secrets
+          secret:
+            secretName: dns
