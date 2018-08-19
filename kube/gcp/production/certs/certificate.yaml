@@ -1,12 +1,19 @@
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
 metadata:
-  name: certificates.stable.k8s.psg.io
+  name: nicktrave-rs
+  namespace: default
 spec:
-  scope: Namespaced
-  group: stable.k8s.psg.io
-  version: v1
-  names:
-    kind: Certificate
-    plural: certificates
-    singular: certificate
+  secretName: tls-site
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: 'nicktrave.rs'
+  dnsNames:
+  - nicktrave.rs
+  acme:
+    config:
+    - dns01:
+        provider: clouddns
+      domains:
+      - nicktrave.rs

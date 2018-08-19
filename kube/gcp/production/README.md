@@ -2,11 +2,33 @@
 
 ## Generate certificates
 
+First, ensure Helm has been installed:
+
+```
+# Install
+$ brew install kubernetes-helm
+$ helm init
+```
+
+Install [cert-manager](https://github.com/jetstack/cert-manager).
+
+```
+$ helm install \
+    --name cert-manager \
+    --namespace kube-system \
+    --set rbac.create=false \
+    stable/cert-manager
+
+# Check for Tiller
+$ kubectl get pods --namespace kube-system
+```
+
 Set up a service account that has DNS Admin privileges. Download the key
 locally, and add it to the cluster:
 
 ```
 $ kubectl create secret generic dns \
+    --namespace=kube-system \
     --from-file=/path/to/service-account.json
 $ kubectl describe secret dns
 ```
@@ -17,22 +39,16 @@ Create a persistent volume for the certificates:
 $ gcloud compute disks create kube-cert-manager --size 10GB
 ```
 
-Create the "Certificate" abstraction:
+Create the `ClusterIssuer`:
 
 ```
-$ kubectl create -f kube/gcp/production/certs/certificate.yaml
-```
-
-Deploy the certificate manager:
-
-```
-$ kubectl create -f kube/gcp/production/certs/kube-cert-manager.yaml
+$ kubectl create -f kube/gcp/prouction/certs/cluster-issuer.yaml
 ```
 
 Generate TLS certificate and key:
 
 ```
-$ kubectl create -f kube/gcp/production/certs/tls-site.yaml
+$ kubectl create -f kube/gcp/production/certs/certificate.yaml
 ```
 
 Create a Diffie-Hellman group to use, and upload as a secret:
