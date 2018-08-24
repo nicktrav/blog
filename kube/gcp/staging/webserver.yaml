@@ -21,7 +21,7 @@ spec:
           - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /_status
+            path: /
             port: 80
             scheme: HTTP
           periodSeconds: 1
@@ -38,8 +38,8 @@ spec:
           requests:
             cpu: 25m
             memory: 250Mi
-      - name: server
-        image: gcr.io/nicktravers-site/server:SHA
+      - name: content
+        image: gcr.io/nicktravers-site/content:SHA
         imagePullPolicy: Always
         resources:
           limits:

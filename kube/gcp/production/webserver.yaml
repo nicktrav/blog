@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: gcr.io/nicktravers-site/nginx:1620ff3288d4c7b2bb703b49197b1b0f3ea59781
+        image: gcr.io/nicktravers-site/nginx:SHA
         imagePullPolicy: Always
         ports:
           - containerPort: 80
         readinessProbe:
           httpGet:
-            path: /_status
+            path: /
             port: 80
             scheme: HTTP
           periodSeconds: 1
@@ -38,8 +38,8 @@ spec:
           requests:
             cpu: 25m
             memory: 250Mi
-      - name: server
-        image: gcr.io/nicktravers-site/server:1620ff3288d4c7b2bb703b49197b1b0f3ea59781
+      - name: content
+        image: gcr.io/nicktravers-site/content:SHA
         imagePullPolicy: Always
         resources:
           limits:
