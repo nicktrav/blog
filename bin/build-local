@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
+set -exuo pipefail
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SHA=$(git rev-parse HEAD)
 
-# Build the project
-mvn clean package
-
 # Build dockerfiles and publsh locally
-pushd "$DIR/.."
-  docker build -t "nickt/blog-server:$SHA" -f "Dockerfile.server" .
-  docker build -t "nickt/blog-nginx:$SHA" -f "Dockerfile.nginx" .
-  docker tag "nickt/blog-server:$SHA" "nickt/blog-server"
-  docker tag "nickt/blog-nginx:$SHA" "nickt/blog-nginx"
-popd
+cd "$DIR/../content"
+docker build -t "nickt/site-content:$SHA" .
+docker tag "nickt/site-content:$SHA" "nickt/site-content"
+
+cd "$DIR/../nginx"
+docker build -t "nickt/site-nginx:$SHA" .
+docker tag "nickt/site-nginx:$SHA" "nickt/site-nginx"

@@ -1,7 +1,7 @@
 FROM nginx
 
 RUN mkdir -p /data/nginx/cache
-ADD conf/nginx.conf /etc/nginx/nginx.conf
+ADD nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

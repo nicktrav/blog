@@ -102,7 +102,7 @@ To test out changes that have yet to be merged to master, use the following:
 
 ```bash
 $ gcloud container builds submit \
-  --config cloudbuild-stage.yaml \
+  --config kube/gcp/staging/cloudbuild.yaml \
   --substitutions=_SHA=$(git rev-parse HEAD) .
 ```
 
