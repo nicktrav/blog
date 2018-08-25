@@ -26,3 +26,5 @@ images: [
   'gcr.io/$PROJECT_ID/nginx:$_SHA',
   'gcr.io/$PROJECT_ID/nginx:stage'
   ]
+
+timeout: 1200s
