@@ -1,6 +1,6 @@
-FROM rust:1.28.0
+FROM rust:1.32.0
 
-RUN cargo install mdbook --vers '0.2.0'
+RUN cargo install mdbook --vers '0.2.1'
 
 RUN apt-get update -y && \
   apt-get install -y dumb-init && \
