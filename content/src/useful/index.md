@@ -1,6 +1,6 @@
 # Useful Shit
 
-Stuff in here is just a random collection of stuff that I've picked up along
+Stuff in here is just a random collection of things that I've picked up along
 the way, inspired by Reddit's [r/til](https://www.reddit.com/r/todayilearned).
 
 Think Bash one-liners and useful CLI commands for various things, structured in

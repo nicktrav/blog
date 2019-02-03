@@ -4,10 +4,9 @@ _January 26th, 2019_
 
 New Year (kind of), new job, and another chance to say that I'm going to be
 serious about writing longer form pieces of content for my site. The new job
-part is probably the most largest driver of the motivation, as I'm going to be
-working extensively with scalable cloud infrastructure built out on top of k8s,
-which serves as a great motivation to write about what I'm learning along the
-way. Fun!
+part is probably the biggest motivation, as I'm going to be working extensively
+with scalable cloud infrastructure built out on top of k8s. This which serves
+as a great opportunity to write about what I'm learning along the way. Fun!
 
 This post is going to detail a problem I had to work around this week related
 to configuration changes and version control.
