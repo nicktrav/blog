@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ include "blog.fullname" . }}
+  labels:
+{{ include "blog.labels" . | indent 4 }}
+spec:
+  secretName: {{ .Values.certificate.name }}
+  issuerRef:
+    name: {{ include "blog.fullname" . }}
+    kind: ClusterIssuer
+  commonName: {{ .Values.certificate.host }}
+  dnsNames:
+  - {{ .Values.certificate.host }}
+  acme:
+    config:
+    - dns01:
+        provider: clouddns
+      domains:
+      - {{ .Values.certificate.host }}
