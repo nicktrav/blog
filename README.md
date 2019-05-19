@@ -83,7 +83,7 @@ Changes can be made to the `deployment.yaml` file and the synced with the
 cluster:
 
 ```bash
-$ kubectl apply -f ./kube/local/deployment.yaml
+$ kubectl apply -f ./minikube/local/deployment.yaml
 ```
 
 If you want to connect back to the local docker (i.e. the one that is _not_ in
@@ -91,6 +91,61 @@ minikube), run the following:
 
 ```bash
 $ eval $(docker-machine env -u)
+```
+
+## Cluster setup
+
+### Generate certificates
+
+First, ensure Helm has been installed:
+
+```
+# Install
+$ brew install kubernetes-helm
+$ helm init
+```
+
+Install [cert-manager](https://github.com/jetstack/cert-manager).
+
+```
+$ helm install \
+    --name cert-manager \
+    --namespace kube-system \
+    --set rbac.create=false \
+    stable/cert-manager
+
+# Check for Tiller
+$ kubectl get pods --namespace kube-system
+```
+
+Set up a service account that has DNS Admin privileges. Download the key
+locally, and add it to the cluster:
+
+```
+$ kubectl create secret generic dns \
+    --namespace=kube-system \
+    --from-file=/path/to/service-account.json
+$ kubectl describe secret dns
+```
+
+Create a persistent volume for the certificates:
+
+```
+$ gcloud compute disks create kube-cert-manager --size 10GB
+```
+
+Create a Diffie-Hellman group to use, and upload as a secret:
+
+```
+$ sudo openssl dhparam -out dhparam.pem 2048
+$ kubectl create secret generic tls-dhparam --from-file=dhparam.pem
+$ rm dhparam.pem
+```
+
+Deploy Helm chart:
+
+```
+$ helm upgrade blog helm/ --values helm/values-staging.yaml --install
 ```
 
 ## Staging (GCP)
@@ -102,7 +157,7 @@ To test out changes that have yet to be merged to master, use the following:
 
 ```bash
 $ gcloud container builds submit \
-  --config kube/gcp/staging/cloudbuild.yaml \
+  --config cloudbuild.yaml \
   --substitutions=_SHA=$(git rev-parse HEAD) .
 ```
 

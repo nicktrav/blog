@@ -1,0 +1,34 @@
+environment: production
+
+content:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 500Mi
+    limits:
+      cpu: 25m
+      memory: 500Mi
+
+nginx:
+  resources:
+    limits:
+      cpu: 25m
+      memory: 250Mi
+    requests:
+      cpu: 25m
+      memory: 250Mi
+
+clusterIssuer:
+  project: nicktravers-site
+  email: n.e.travers@gmail.com
+
+certificate:
+  name: tls-site
+  host: nicktrave.rs
+
+ingress:
+  staticIP: site-production
+  host: nicktrave.rs
+  tls:
+    secret: tls-site
+    host: nicktrave.rs
