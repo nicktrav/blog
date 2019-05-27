@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: "gcr.io/nicktravers-site/nginx:{{ .Chart.AppVersion }}"
+          image: "gcr.io/nicktravers-site/blog:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           ports:
             - name: http
@@ -28,16 +28,8 @@ spec:
               path: /
               port: http
               scheme: HTTP
-          volumeMounts:
-            - name: tls
-              mountPath: /etc/tls
           resources:
 {{ toYaml .Values.nginx.resources | indent 12 }}
-        - name: content
-          image: "gcr.io/nicktravers-site/content:{{ .Chart.AppVersion }}"
-          imagePullPolicy: Always
-          resources:
-{{ toYaml .Values.content.resources | indent 12 }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -47,7 +39,3 @@ spec:
                 labelSelector:
                   matchLabels:
 {{ include "blog.labels" . | indent 20 }}
-      volumes:
-        - name: tls
-          secret:
-            secretName: tls-site
