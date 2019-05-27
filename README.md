@@ -156,9 +156,8 @@ to get a cluster up and running.
 To test out changes that have yet to be merged to master, use the following:
 
 ```bash
-$ gcloud container builds submit \
-  --config cloudbuild.yaml \
-  --substitutions=_SHA=$(git rev-parse HEAD) .
+$ gcloud builds submit \
+  --config cloudbuild-staging.yaml .
 ```
 
 This will build set of containers with for the current SHA, and also labeled

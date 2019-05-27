@@ -1,31 +1,18 @@
 steps:
 
-  # Content build
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/content:$REVISION_ID', '-f', 'content/Dockerfile', 'content/']
-  id: 'content-build'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/blog:$REVISION_ID', '-f', 'Dockerfile', '.']
+  id: 'blog'
   wait_for: ['-']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/content:$REVISION_ID', 'gcr.io/$PROJECT_ID/content']
-  wait_for: ['content-build']
-
-  # Nginx build
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/nginx:$REVISION_ID', '-f', 'nginx/Dockerfile', 'nginx/']
-  id: 'nginx-build'
-  wait_for: ['-']
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'gcr.io/$PROJECT_ID/nginx:$REVISION_ID', 'gcr.io/$PROJECT_ID/nginx']
-  wait_for: ['nginx-build']
+  args: ['tag', 'gcr.io/$PROJECT_ID/blog:$REVISION_ID', 'gcr.io/$PROJECT_ID/blog']
+  wait_for: ['blog']
 
 images: [
-  'gcr.io/$PROJECT_ID/content:$REVISION_ID',
-  'gcr.io/$PROJECT_ID/content:latest',
-  'gcr.io/$PROJECT_ID/nginx:$REVISION_ID',
-  'gcr.io/$PROJECT_ID/nginx:latest'
-  ]
+  'gcr.io/$PROJECT_ID/blog:$REVISION_ID',
+  'gcr.io/$PROJECT_ID/blog:latest'
+]
 
 options:
   machineType: 'N1_HIGHCPU_8'
