@@ -103,19 +103,34 @@ First, ensure Helm has been installed:
 # Install
 $ brew install kubernetes-helm
 $ helm init
+
+# Check for Tiller
+$ kubectl get pods --namespace kube-system
 ```
 
 Install [cert-manager](https://github.com/jetstack/cert-manager).
 
 ```
-$ helm install \
-    --name cert-manager \
-    --namespace kube-system \
-    --set rbac.create=false \
-    stable/cert-manager
+# Install the CustomResourceDefinition resources separately
+$ kubectl apply \
+  --validate=false \
+  -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
 
-# Check for Tiller
-$ kubectl get pods --namespace kube-system
+# Create the namespace for cert-manager
+$ kubectl create namespace cert-manager
+
+# Add the Jetstack Helm repository
+$ helm repo add jetstack https://charts.jetstack.io
+
+# Update your local Helm chart repository cache
+$ helm repo update
+
+# Install the cert-manager Helm chart
+$ helm install \
+  --name cert-manager \
+  --namespace cert-manager \
+  --version v0.11.0 \
+  jetstack/cert-manager
 ```
 
 Set up a service account that has DNS Admin privileges. Download the key
@@ -123,9 +138,9 @@ locally, and add it to the cluster:
 
 ```
 $ kubectl create secret generic dns \
-    --namespace=kube-system \
+    --namespace=cert-manager \
     --from-file=/path/to/service-account.json
-$ kubectl describe secret dns
+$ kubectl describe secret dns --namespace cert-manager
 ```
 
 Create a persistent volume for the certificates:

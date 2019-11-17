@@ -1,4 +1,4 @@
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
   name: {{ include "blog.fullname" . }}
@@ -10,9 +10,8 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: issuer-account-key
-    dns01:
-      providers:
-      - name: clouddns
+    solvers:
+    - dns01:
         clouddns:
           project : {{ .Values.clusterIssuer.project }}
           serviceAccountSecretRef:
