@@ -4,6 +4,8 @@ metadata:
   name: {{ include "blog.fullname" . }}
   labels:
 {{ include "blog.labels" . | indent 4 }}
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: NodePort
   ports:
