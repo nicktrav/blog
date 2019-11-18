@@ -18,7 +18,7 @@ certificate:
   host: nicktrave.rs
 
 ingress:
-  staticIP: site-production
+  staticIP: site-ingress-production
   host: nicktrave.rs
   tls:
     secret: tls-site

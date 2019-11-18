@@ -143,20 +143,6 @@ $ kubectl create secret generic dns \
 $ kubectl describe secret dns --namespace cert-manager
 ```
 
-Create a persistent volume for the certificates:
-
-```
-$ gcloud compute disks create kube-cert-manager --size 10GB
-```
-
-Create a Diffie-Hellman group to use, and upload as a secret:
-
-```
-$ sudo openssl dhparam -out dhparam.pem 2048
-$ kubectl create secret generic tls-dhparam --from-file=dhparam.pem
-$ rm dhparam.pem
-```
-
 Deploy Helm chart:
 
 ```
