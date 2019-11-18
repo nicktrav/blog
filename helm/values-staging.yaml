@@ -5,7 +5,7 @@ certificate:
   host: stage.nicktrave.rs
 
 ingress:
-  staticIP: site-staging
+  staticIP: site-ingress-staging
   host: stage.nicktrave.rs
   tls:
     secret: tls-site
