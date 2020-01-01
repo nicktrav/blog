@@ -102,10 +102,11 @@ First, ensure Helm has been installed:
 ```
 # Install
 $ brew install kubernetes-helm
-$ helm init
+$ kubectl apply -f helm/tiller-rbac.yaml
+$ helm init --service-account tiller
 
 # Check for Tiller
-$ kubectl get pods --namespace kube-system
+$ kubectl -n kube-system get pods -l name=tiller
 ```
 
 Install [cert-manager](https://github.com/jetstack/cert-manager).
