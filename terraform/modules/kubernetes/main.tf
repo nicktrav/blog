@@ -67,6 +67,7 @@ resource "google_container_node_pool" "preemptible" {
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
+    disk_size_gb = 10
   }
 
   management {
