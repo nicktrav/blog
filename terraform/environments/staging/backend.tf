@@ -1,5 +1,5 @@
 terraform {
-  required_version = "0.12.10"
+  required_version = "0.12.24"
   backend "gcs" {
     bucket = "nicktravers-site-tf-state-staging"
     prefix = "terraform/state"
