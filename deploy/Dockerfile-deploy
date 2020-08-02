@@ -1,0 +1,32 @@
+FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:54e0e8e69dd42cb76c3737c8f44c88bf5ad4ecd187aa6412ad08778254353988 AS build
+
+RUN apt-get update && \
+  apt-get install -y apt-transport-https ca-certificates curl gnupg && \
+  \
+# Google Cloud
+  \
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
+  apt-get update && \
+  apt-get install -y google-cloud-sdk && \
+  \
+# Helm
+  \
+  echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list && \
+  curl https://helm.baltorepo.com/organization/signing.asc | apt-key add - && \
+  apt-get update && \
+  apt-get install -y helm && \
+  \
+# jq
+  \
+  apt-get install -y jq && \
+  \
+# Cleanup
+  \
+  rm -rf /var/lib/apt/lists/*
+
+WORKDIR /deploy
+
+ADD run_deploy.sh .
+
+ENTRYPOINT ["./run_deploy.sh"]

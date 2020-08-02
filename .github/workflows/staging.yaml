@@ -1,0 +1,51 @@
+name: Staging release
+
+on:
+  push:
+    branches: staging
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build the container image
+      run: docker build -f build/Dockerfile -t blog .
+    - name: Tag the container image
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+      run: docker tag blog gcr.io/$GCP_PROJECT_ID/blog:staging
+    - name: Set up gcloud
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}
+        project_id: ${{ secrets.GCP_PROJECT }}
+    - name: Docker login
+      run: gcloud --quiet auth configure-docker
+    - name: Push container image
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+      run: docker push gcr.io/$GCP_PROJECT_ID/blog:staging
+
+  deploy:
+    needs:
+    - build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build the deploy container
+      run: docker build -f deploy/Dockerfile-deploy -t site-deploy deploy
+    - name: Mount GCP service account key
+      env:
+        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STAGING }}
+      run: umask 077 && echo $GCP_SERVICE_ACCOUNT_KEY > /dev/shm/key.json
+    - name: Deploy
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+      run: ./deploy/deploy.sh staging staging
+    - name: Shred key
+      run: shred /dev/shm/key.json -u
