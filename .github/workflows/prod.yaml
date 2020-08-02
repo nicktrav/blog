@@ -2,7 +2,7 @@ name: Production release
 
 on:
   push:
-    branches: staging
+    branches: master
 
 jobs:
 
