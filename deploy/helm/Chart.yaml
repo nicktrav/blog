@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for my blog.
+name: blog
+version: 1.0.0
