@@ -22,8 +22,7 @@ $ kubectl create secret tls envoy \
 Run the site locally with the following:
 
 ```bash
-$ docker run --rm -it 
-..
+$ ./build/run_local.sh
 ```
 
 ## Staging (GCP)

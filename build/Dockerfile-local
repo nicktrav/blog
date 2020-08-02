@@ -1,0 +1,18 @@
+FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:54e0e8e69dd42cb76c3737c8f44c88bf5ad4ecd187aa6412ad08778254353988 AS build
+
+RUN apt-get update -y && \
+  apt-get install -y curl gcc && \
+  curl -L -O https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init && \
+  chmod +x rustup-init && \
+  echo 1 | ./rustup-init
+
+ENV PATH $PATH:/root/.cargo/bin
+
+RUN cargo install mdbook --vers '0.4.1'
+
+RUN curl -Lo /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
+  chmod +x /usr/local/bin/dumb-init
+
+WORKDIR /site
+
+ENTRYPOINT ["dumb-init", "--", "mdbook", "serve"]
