@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/russross/blackfriday/v2"
@@ -167,8 +168,18 @@ type indexPageItem struct {
 	Name string
 }
 
-type indexPage struct {
-	Pages []indexPageItem
+type byName []indexPageItem
+
+func (b byName) Len() int {
+	return len(b)
+}
+
+func (b byName) Less(i, j int) bool {
+	return b[i].Name < b[j].Name
+}
+
+func (b byName) Swap(i, j int) {
+	b[i], b[j] = b[j], b[i]
 }
 
 func (p *PageManager) NewIndexHandler() (http.HandlerFunc, error) {
@@ -180,7 +191,11 @@ func (p *PageManager) NewIndexHandler() (http.HandlerFunc, error) {
 		}
 		pages = append(pages, indexPageItem{Name: name})
 	}
+	sort.Sort(byName(pages))
 
+	type indexPage struct {
+		Pages []indexPageItem
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := p.templater.Render(w, p.indexTemplate, indexPage{Pages: pages})
 		if err != nil {
