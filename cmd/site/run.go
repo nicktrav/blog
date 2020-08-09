@@ -56,6 +56,7 @@ var runCmd = &cobra.Command{
 
 		r := mux.NewRouter()
 		r.Path("/").Handler(withLogging(indexController.NewHandler()))
+		r.Path("/favicon.ico").Handler(withLogging(http.RedirectHandler("/static/favicon.ico", 301)))
 		r.PathPrefix("/static/").Handler(withLogging(http.StripPrefix("/static/", http.FileServer(http.Dir("./static")))))
 
 		h, err := postManager.NewIndexHandler()
