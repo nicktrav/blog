@@ -1,6 +1,10 @@
 Yubikeys
 ========
 
+ key  | value   
+ ---  | ---      
+name  | yubikeys
+
 Commands for setting up a Yubikey, with GPG key and SSH key using (PIV).
 
 Relies on the following:

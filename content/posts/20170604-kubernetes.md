@@ -1,5 +1,9 @@
 # Kubernetes and SSL
 
+ key  | value   
+ ---  | ---      
+name  | 2017-06-04-kubernetes
+
 _June 4th, 2017_
 
 In 2017 it's a little scary to have to browse to a website that isn't "secure".

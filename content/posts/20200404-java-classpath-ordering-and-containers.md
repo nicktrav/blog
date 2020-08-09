@@ -1,5 +1,9 @@
 # Java classpaths, containers and Kubernetes
 
+ key  | value   
+ ---  | ---      
+name  | 2017-05-27-java-classpath
+
 _April 4, 2020_
 
 Here's a weird bug I had the pleasure of digging into. Nothing like being

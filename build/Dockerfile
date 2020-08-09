@@ -1,32 +1,20 @@
-# Build container - mdbook
-FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:54e0e8e69dd42cb76c3737c8f44c88bf5ad4ecd187aa6412ad08778254353988 AS build
+FROM golang:1.14.4 AS build
 
-RUN apt-get update -y && \
-  apt-get install -y curl gcc && \
-  curl -L -O https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init && \
-  chmod +x rustup-init && \
-  echo 1 | ./rustup-init
+WORKDIR /build
 
-ENV PATH $PATH:/root/.cargo/bin
+COPY . .
 
-RUN cargo install mdbook --vers '0.4.1'
+RUN go build ./cmd/site
 
-ADD content/ /site
+FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:f57a7583f196eeeda9ee2c06470e51bbbfa18c7362fd6965d2eb91bbd7f9708a
 
 WORKDIR /site
 
-RUN mdbook build
+ADD config.yaml .
+ADD content ./content
+ADD templates ./templates
+ADD static ./static
 
-# Runtime conatiner - nginx
-FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:54e0e8e69dd42cb76c3737c8f44c88bf5ad4ecd187aa6412ad08778254353988
+COPY --from=build /build/site .
 
-RUN apt-get update -y && \
-  apt-get install -y nginx && \
-  apt-get remove --purge -y && \
-  rm -rf /var/lib/apt/lists/*
-
-ADD build/nginx/nginx.conf /etc/nginx/nginx.conf
-
-COPY --from=build /site/_site /usr/share/nginx/html/
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["./site"]

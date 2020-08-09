@@ -1,31 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "blog.fullname" . }}
+  name: {{ include "site.fullname" . }}
   labels:
-    {{- include "blog.labels" . | nindent 4 }}
+    {{- include "site.labels" . | nindent 4 }}
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: {{ include "blog.name" . }}
+      app: {{ include "site.name" . }}
   template:
     metadata:
       labels:
-        {{- include "blog.labels" . | nindent 8 }}
+        {{- include "site.labels" . | nindent 8 }}
       annotations:
         appVersion: {{ .Chart.AppVersion | quote }}
         checksum/config: {{ include (print $.Template.BasePath "/envoy-configmap.yaml") . | sha256sum }}
     spec:
       containers:
-      - name: blog
-        image: gcr.io/{{ .Values.project }}/blog:{{ .Values.version }}
+      - name: site
+        image: gcr.io/{{ .Values.project }}/site:{{ .Values.version }}
+        args:
+        - run
+        - --config
+        - /site/config.yaml
         imagePullPolicy: Always
         resources:
           {{- toYaml .Values.envoy.resources | nindent 10 }}
         livenessProbe:
           tcpSocket:
-            port: 80
+            port: 3000
       - name: envoy
         image: envoyproxy/envoy:{{ .Values.envoy.version }}
         args:
@@ -63,4 +67,4 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: blog
+                  app: site

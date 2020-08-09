@@ -1,8 +1,8 @@
-{{- define "blog.name" -}}
+{{- define "site.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "blog.fullname" -}}
+{{- define "site.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -15,13 +15,13 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "blog.chart" -}}
+{{- define "site.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "blog.labels" -}}
-app: {{ include "blog.name" . }}
-chart: {{ include "blog.chart" . }}
+{{- define "site.labels" -}}
+app: {{ include "site.name" . }}
+chart: {{ include "site.chart" . }}
 heritage: {{ .Release.Service | quote }}
 release: {{ .Release.Name | quote }}
 environment: {{ .Values.environment | quote }}

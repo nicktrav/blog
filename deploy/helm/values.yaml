@@ -5,7 +5,6 @@ version:
 project:
 domains:
 - nicktrave.rs
-- blog.nicktrave.rs
 
 envoy:
   version: v1.14.3
