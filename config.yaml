@@ -1,0 +1,19 @@
+server:
+  hostname: 0.0.0.0
+  port: 3000
+
+templates:
+  dir: ./templates
+
+index:
+  template: index.html.tpl
+
+posts:
+  dir: ./content/posts/
+  post_template: post.html.tpl
+  index_template: post_index.html.tpl
+
+useful:
+  dir: ./content/useful/
+  page_template: useful.html.tpl
+  index_template: useful_index.html.tpl

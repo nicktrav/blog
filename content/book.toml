@@ -1,7 +1,0 @@
-[book]
-title = "nicktrave.rs"
-author = "Nick Travers"
-description = "Bits and pieces"
-
-[build]
-build-dir = "_site"

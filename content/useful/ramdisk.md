@@ -1,6 +1,10 @@
 ramdisk
 =======
 
+ key  | value   
+ ---  | ---      
+name  | ramdisk
+
 Use the following to create a 1MB RAM-backed mount:
 
 ```bash

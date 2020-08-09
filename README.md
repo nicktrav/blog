@@ -1,6 +1,6 @@
 # nicktrave.rs
 
-My website, accessible at [blog.nicktrave.rs](https://nicktrave.rs).
+My website, accessible at [nicktrave.rs](https://nicktrave.rs).
 
 ## Cluster setup
 
@@ -22,8 +22,10 @@ $ kubectl create secret tls envoy \
 Run the site locally with the following:
 
 ```bash
-$ ./build/run_local.sh
+$ make run-docker
 ```
+
+Open the page at [`http://localhost:3000`](http://localhost:3000).
 
 ## Staging (GCP)
 

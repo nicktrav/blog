@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: envoy
   labels:
-{{ include "blog.labels" . | indent 4 }}
+{{ include "site.labels" . | indent 4 }}
 data:
   envoy.yaml: |
     node:
@@ -75,4 +75,4 @@ data:
                 address:
                   socket_address:
                     address: 127.0.0.1
-                    port_value: 80
+                    port_value: 3000

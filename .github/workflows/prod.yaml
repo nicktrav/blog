@@ -12,11 +12,11 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
     - name: Build the container image
-      run: docker build -f build/Dockerfile -t blog .
+      run: make build-docker
     - name: Tag the container image
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-      run: docker tag blog gcr.io/$GCP_PROJECT_ID/blog:$(git rev-parse HEAD)
+      run: docker tag site gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
     - name: Set up gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
@@ -28,7 +28,7 @@ jobs:
     - name: Push container image
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-      run: docker push gcr.io/$GCP_PROJECT_ID/blog:$(git rev-parse HEAD)
+      run: docker push gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
 
   deploy:
     needs:
