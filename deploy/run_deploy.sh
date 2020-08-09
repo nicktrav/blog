@@ -52,7 +52,7 @@ _addr=$(gcloud compute addresses list \
   --format json | jq .[].address)
 
 echo "Installing Helm chart ..."
-helm upgrade blog "$_helm_dir" \
+helm upgrade site "$_helm_dir" \
   --values "$_helm_dir/$_values.yaml" \
   --set ipAddress="$_addr" \
   --set version="$_version" \

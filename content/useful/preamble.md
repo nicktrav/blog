@@ -1,5 +1,9 @@
 # Useful Shit
 
+ key  | value   
+ ---  | ---      
+name  | preamble
+
 Stuff in here is just a random collection of things that I've picked up along
 the way, inspired by Reddit's [r/til](https://www.reddit.com/r/todayilearned).
 

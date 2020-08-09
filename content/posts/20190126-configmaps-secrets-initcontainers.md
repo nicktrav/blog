@@ -1,5 +1,9 @@
 # `ConfigMaps`, `Secrets` and `InitContainers`
 
+ key  | value   
+ ---  | ---      
+name  | 2019-01-26-configmaps-secrets
+
 _January 26th, 2019_
 
 New Year (kind of), new job, and another chance to say that I'm going to be
