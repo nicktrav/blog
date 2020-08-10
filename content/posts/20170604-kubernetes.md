@@ -1,7 +1,7 @@
 # Kubernetes and SSL
 
- key  | value   
- ---  | ---      
+ key  | value
+ ---  | ---
 name  | 2017-06-04-kubernetes
 
 _June 4th, 2017_

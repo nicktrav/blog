@@ -1,7 +1,7 @@
 # `ConfigMaps`, `Secrets` and `InitContainers`
 
- key  | value   
- ---  | ---      
+ key  | value
+ ---  | ---
 name  | 2019-01-26-configmaps-secrets
 
 _January 26th, 2019_

@@ -1,7 +1,7 @@
 # Up and running!
 
- key  | value   
- ---  | ---      
+ key  | value
+ ---  | ---
 name  | 2017-05-27-up-and-running
 
 _May 27th, 2017_
