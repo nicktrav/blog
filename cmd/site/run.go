@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/handlers"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/nicktrav/site/internal/config"
 	"github.com/nicktrav/site/internal/content"
