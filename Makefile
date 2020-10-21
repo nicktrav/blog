@@ -10,14 +10,14 @@ all: build test lint
 
 DIR := ${CURDIR}
 
-build_dir := $(DIR)/bin
+build_dir := $(DIR)/bazel-bin/cmd/site/site_
 
 bin/:
 	@mkdir -p $@
 
 .PHONY: build
 build:
-	@go build -o $(build_dir)/site ./cmd/site
+	@bazel build //...
 
 .PHONY: build-docker
 build-docker:
@@ -44,11 +44,11 @@ test: test-go test-go-race
 
 .PHONY: test-go
 test-go:
-	@go test ./...
+	@bazel test //...
 
 .PHONY: test-go-race
 test-go-race:
-	@go test -race ./...
+	@bazel test //... --features=race
 
 # ------------------------------------------------------------------------------
 # LINT

@@ -1,1 +1,6 @@
-bin/
+bazel-bin
+bazel-blog
+bazel-out
+bazel-testlogs
+
+.ijwb/
