@@ -78,7 +78,7 @@ $ umask 077
 
 # Create a public key.
 # Enter the management key when prompted.
-# Default can be found by running yubico-piv-tool --help
+# Default: 010203040506070801020304050607080102030405060708
 $ yubico-piv-tool \
   -a generate \
   -s 9a \
