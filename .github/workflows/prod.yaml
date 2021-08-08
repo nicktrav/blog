@@ -18,7 +18,7 @@ jobs:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
       run: docker tag site gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
     - name: Set up gcloud
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      run: docker tag site gcr.io/$GCP_PROJECT_ID/site:staging
       with:
         version: '290.0.1'
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PRODUCTION }}
@@ -46,6 +46,7 @@ jobs:
     - name: Deploy
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+        DIGITAL_OCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
       run: ./deploy/deploy.sh prod $(git rev-parse HEAD)
     - name: Shred key
       run: shred /dev/shm/key.json -u

@@ -21,6 +21,11 @@ RUN apt-get update && \
   \
   apt-get install -y jq && \
   \
+# Digital Ocean utils
+  curl -LO https://github.com/digitalocean/doctl/releases/download/v1.62.0/doctl-1.62.0-linux-amd64.tar.gz && \
+    tar xzf doctl-1.62.0-linux-amd64.tar.gz && \
+    mv doctl /usr/local/bin/ && \
+  \
 # Cleanup
   \
   rm -rf /var/lib/apt/lists/*

@@ -11,4 +11,4 @@ envoy:
   resources:
     requests:
       cpu: 25m
-      memory: 250Mi
+      memory: 100Mi

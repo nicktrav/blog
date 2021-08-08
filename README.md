@@ -17,6 +17,30 @@ $ kubectl create secret tls envoy \
   --cert=/dev/shm/cert.pem
 ```
 
+### Google Container Registry (GCR)
+
+In order for the kubelet to pull the container images from Google Cloud, a
+Secret needs to exist with the Docker pull credentials.
+
+Fetch the key from the appropriate service account (i.e. prod / staging):
+
+```bash
+# E.g. for staging.
+$ gcloud iam service-accounts keys create \
+  /dev/shm/key.json \
+  --iam-account=site-gcr-reader-staging@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com
+```
+
+Create the K8s Secret:
+
+```bash
+$ kubectl create secret docker-registry gcr \
+  --docker-server https://gcr.io \
+  --docker-username=_json_key \
+  --docker-email=user@example.com \
+  --docker-password="$(cat /dev/shm/key.json)"
+```
+
 ## Development
 
 Run the site locally with the following:
@@ -51,6 +75,7 @@ View actions [here](https://github.com/nicktrav/blog/actions?query=workflow%3A%2
 A deploy can be initiated manually with the following:
 
 ```bash
-GCP_KEY_FILE=/path/to/service/account/key.json
+$ export GCP_PROJECT_ID=...
+$ export=DIGITAL_OCEAN_TOKEN=...
 $ ./deploy/deploy.sh prod $(git rev-parse HEAD)
 ```
