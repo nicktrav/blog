@@ -23,6 +23,10 @@ build:
 build-docker:
 	@docker build -t site -f ./build/Dockerfile .
 
+.PHONY: build-docker-deploy
+build-docker-deploy:
+	@docker build -t site-deploy -f ./deploy/Dockerfile-deploy deploy
+
 # ------------------------------------------------------------------------------
 # RUN
 # ------------------------------------------------------------------------------

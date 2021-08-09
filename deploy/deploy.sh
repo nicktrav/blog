@@ -24,5 +24,6 @@ docker run --rm \
   -v "$_gcp_key_file:/deploy/key.json" \
   -v "$_dir/helm:/deploy/helm" \
   -e GCP_PROJECT_ID="$GCP_PROJECT_ID" \
+  -e DIGITAL_OCEAN_TOKEN="$DIGITAL_OCEAN_TOKEN" \
   "$_container_name" \
   "$_env" "$_version"
