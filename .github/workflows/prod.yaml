@@ -18,7 +18,7 @@ jobs:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
       run: docker tag site gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
     - name: Set up gcloud
-      run: docker tag site gcr.io/$GCP_PROJECT_ID/site:staging
+      uses: google-github-actions/setup-gcloud@master
       with:
         version: '290.0.1'
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PRODUCTION }}
