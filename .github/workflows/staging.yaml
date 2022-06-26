@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Build the container image
       run: make build-docker
     - name: Tag the container image
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Build the deploy container
       run: docker build -f deploy/Dockerfile-deploy -t site-deploy deploy
     - name: Mount GCP service account key
