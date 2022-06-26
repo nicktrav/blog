@@ -61,7 +61,8 @@ A deploy can be initiated manually with the following:
 View actions [here](https://github.com/nicktrav/blog/actions?query=workflow%3A%22Staging+release%22).
 
 ```bash
-GCP_KEY_FILE=/path/to/service/account/key.json
+$ export GCP_PROJECT_ID=...
+$ export=DIGITAL_OCEAN_TOKEN=...
 $ ./deploy/deploy.sh staging staging
 ```
 
