@@ -50,6 +50,61 @@ export GPG_TTY
 gpgconf --launch gpg-agent
 ```
 
+### Seeding local instance
+
+Import keys in RAM (e.g. `/dev/shm`).
+
+```bash
+$ gpg --import private.key
+```
+
+Export subkeys.
+
+```bash
+$ gpg --armor --output subkeys.key --export-secret-subkeys $KEY
+```
+
+Remove all secret keys.
+
+```bash
+$ gpg --delete-secret-keys $KEY
+```
+
+Re-import subkey secret keys.
+
+```bash
+$ gpg --import subkeys.key
+```
+
+Update the subkey to point at the Yubikey.
+
+```bash
+$ gpg --expert --edit-key $KEY
+
+gpg> key $NUM
+gpg> keytocard
+```
+
+Select signature key. Enter the passphrases to unlock the key, and then enter
+the Yubikey admin PIN (`12345678`).
+
+Save and exit.
+
+List the secret keys, which should show a pointer to the card for the subkey.
+
+```bash
+$ gpg --list-secret-keys
+------------------------------
+sec>  ... snip ...
+ssb>  ... snip ...
+```
+
+Shred any remaining key material.
+
+```bash
+$ shred -u $FILE [$FILE ...]
+```
+
 ## SSH
 
 The following generates a new SSH keypair that resides on the key. Adapted from
