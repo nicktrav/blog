@@ -1,4 +1,4 @@
-address: 0.0.0.0:3000
+address: :8080
 
 templates: ./templates
 

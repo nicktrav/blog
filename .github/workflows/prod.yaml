@@ -2,51 +2,19 @@ name: Production release
 
 on:
   push:
-    branches: main
+    branches:
+    - main
+    - prod
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-    - name: Build the container image
-      run: make build-docker
-    - name: Tag the container image
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-      run: docker tag site gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
-    - name: Set up gcloud
-      uses: google-github-actions/setup-gcloud@v0.6.0
-      with:
-        version: '290.0.1'
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PRODUCTION }}
-        project_id: ${{ secrets.GCP_PROJECT }}
-    - name: Docker login
-      run: gcloud --quiet auth configure-docker
-    - name: Push container image
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-      run: docker push gcr.io/$GCP_PROJECT_ID/site:$(git rev-parse HEAD)
-
   deploy:
-    needs:
-    - build
+    name: Deploy production
     runs-on: ubuntu-latest
     steps:
-    - name: Check out code
-      uses: actions/checkout@v3
-    - name: Build the deploy container
-      run: docker build -f deploy/Dockerfile-deploy -t site-deploy deploy
-    - name: Mount GCP service account key
-      env:
-        GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY_PRODUCTION }}
-      run: umask 077 && echo $GCP_SERVICE_ACCOUNT_KEY > /dev/shm/key.json
-    - name: Deploy
-      env:
-        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-        DIGITAL_OCEAN_TOKEN: ${{ secrets.DIGITAL_OCEAN_TOKEN }}
-      run: ./deploy/deploy.sh prod $(git rev-parse HEAD)
-    - name: Shred key
-      run: shred /dev/shm/key.json -u
+      - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only -c production.toml

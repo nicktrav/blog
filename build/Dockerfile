@@ -1,10 +1,6 @@
-FROM golang:1.18.3-buster AS build
+FROM golang:1.18.3-alpine3.16 AS build
 
-RUN \
-  apt-get update && \
-  apt-get install -y curl gcc && \
-  curl -L -o /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 && \
-  chmod +x /usr/local/bin/bazel
+RUN apk add make
 
 COPY . /build
 
@@ -12,12 +8,14 @@ WORKDIR /build
 
 RUN make build
 
-FROM gcr.io/cloud-marketplace-containers/google/debian10@sha256:9a4a8331d0626e2b56ababd7e4467b8847ef54809d27e721fba2b4b03073ad02
+FROM alpine:3.16.0
 
 WORKDIR /site
 
 ADD content ./content
 
-COPY --from=build /build/bazel-bin/pkg/cmd/site/site_/site .
+COPY --from=build /build/bin/site .
 
-ENTRYPOINT ["./site"]
+EXPOSE 8080
+
+CMD ["./site", "run", "--manifest", "./content/manifest.yaml"]

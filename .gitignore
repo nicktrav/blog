@@ -1,6 +1,2 @@
-bazel-bin
-bazel-blog
-bazel-out
-bazel-testlogs
-
+bin/
 .ijwb/

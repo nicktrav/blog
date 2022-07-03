@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -39,6 +40,7 @@ var runCmd = &cobra.Command{
 			ReadTimeout:  15 * time.Second,
 			WriteTimeout: 15 * time.Second,
 		}
+		log.Printf("listening on %s ...", m.Address)
 		return s.ListenAndServe()
 	},
 }

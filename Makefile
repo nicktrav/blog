@@ -17,7 +17,7 @@ bin/:
 
 .PHONY: build
 build:
-	@bazel build //...
+	@go build -o bin/site ./pkg/cmd/site
 
 .PHONY: build-docker
 build-docker:
@@ -37,7 +37,7 @@ run: build
 
 .PHONY: run-docker
 run-docker: build-docker
-	@docker run --rm -it -p 3000:3000 site run --manifest ./content/manifest.yaml
+	@docker run --rm -it -p 8080:8080 site
 
 # ------------------------------------------------------------------------------
 # TEST

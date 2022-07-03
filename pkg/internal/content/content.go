@@ -94,7 +94,7 @@ func (m *Manager) Router() (*mux.Router, error) {
 	}
 
 	// Root.
-	log.Printf("index handler")
+	log.Printf("registering index handler")
 	r.Path("/").Handler(fnWithLogging(func(w http.ResponseWriter, req *http.Request) {
 		params := struct {
 			Posts, Useful []pageInfo
