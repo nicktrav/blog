@@ -54,11 +54,6 @@ posts:
 useful:
   template: useful.html.tpl
   pages:
-    - url: /useful
-      file: ./useful/index.html
-      template: useful.html.tpl
-      meta:
-        title: Useful
     - url: /useful/ramdisk
       file: ./useful/ramdisk.html
       template: useful.html.tpl
