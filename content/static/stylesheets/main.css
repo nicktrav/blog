@@ -1,7 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=PT+Serif|PT+Serif:b|PT+Serif:i|PT+Sans|PT+Sans:b|Inconsolata);
 
-html {
-    min-width: 1040px;
+@media (max-device-width: 700px) {
+    body {
+        width: 90%;
+    }
+}
+
+@media (min-device-width: 700px) {
+    body {
+        width: 650px;
+    }
 }
 
 body {
@@ -10,53 +18,40 @@ body {
     font-family: "PT Sans", sans-serif;
     margin: 1em auto 4em auto;
     position: relative;
-    width: 960px;
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
     color: #000;
 }
 
-header,
-footer {
-    color: #636363;
-}
-
-h1 {
-    font-size: 64px;
-    font-weight: 300;
-    letter-spacing: -2px;
-    margin: .3em 0 .1em 0;
-}
-
 h1, h2 {
+    font-weight: 300;
+    letter-spacing: -1px;
+    margin: .3em 0 .1em 0;
     text-rendering: optimizeLegibility;
 }
 
-h2 a[name],
-h2 a[id] {
+header, footer {
+    color: #636363;
+}
+
+h2 a[name], h2 a[id] {
     color: #ccc;
     right: 100%;
     padding: 0 .3em;
     position: absolute;
 }
 
-header,
-footer {
+header, footer {
     font-size: small;
 }
 
-header a,
-footer a {
+header a, footer a {
     float: left;
     margin-right: .5em;
 }
 
-header aside:before,
-footer aside:before {
+header aside:before, footer aside:before {
     padding-right: .5em;
     content: "/";
 }
@@ -69,7 +64,6 @@ h1 ~ aside {
     font-size: small;
     right: 0;
     position: absolute;
-    width: 180px;
 }
 
 .attribution {
@@ -78,17 +72,13 @@ h1 ~ aside {
 }
 
 body > p, li > p {
-    line-height: 1.5em;
+    line-height: 1.4em;
     text-align: justify;
     text-justify: auto;
 }
 
-body > p {
-    width: 720px;
-}
-
-body > blockquote {
-    width: 640px;
+li > p {
+    margin: 0 1em 0.6em auto;
 }
 
 blockquote q {
@@ -96,16 +86,11 @@ blockquote q {
     font-style: oblique;
 }
 
-li {
-    width: 680px;
-}
-
 a {
     color: orangered;
 }
 
-header a:not(:hover),
-footer a:not(:hover) {
+header a:not(:hover), footer a:not(:hover) {
     text-decoration: none;
 }
 
