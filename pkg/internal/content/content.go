@@ -109,7 +109,7 @@ func (m *Manager) Router() (*mux.Router, error) {
 		}
 	}))
 
-	r.Path("/favicon.ico").Handler(withLogging(http.RedirectHandler("/content/static/favicon.ico", 301)))
+	r.Path("/favicon.ico").Handler(withLogging(http.RedirectHandler("/static/favicon.ico", 301)))
 	r.PathPrefix("/static/").Handler(withLogging(http.StripPrefix("/static/", http.FileServer(http.Dir("./content/static")))))
 
 	return r, nil
