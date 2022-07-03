@@ -10,14 +10,14 @@ all: build test lint
 
 DIR := ${CURDIR}
 
-build_dir := $(DIR)/bazel-bin/cmd/site/site_
+build_dir := $(DIR)/bin
 
 bin/:
 	@mkdir -p $@
 
 .PHONY: build
 build:
-	@bazel build //...
+	@go build -o bin/site ./pkg/cmd/site
 
 .PHONY: build-docker
 build-docker:
@@ -33,11 +33,11 @@ build-docker-deploy:
 
 .PHONY: run
 run: build
-	@$(build_dir)/site run --config config.yaml
+	@$(build_dir)/site run --manifest ./content/manifest.yaml
 
 .PHONY: run-docker
 run-docker: build-docker
-	@docker run --rm -it --network=host site run --config config.yaml
+	@docker run --rm -it -p 8080:8080 site
 
 # ------------------------------------------------------------------------------
 # TEST
@@ -48,11 +48,11 @@ test: test-go test-go-race
 
 .PHONY: test-go
 test-go:
-	@bazel test //...
+	@go test ./...
 
 .PHONY: test-go-race
 test-go-race:
-	@bazel test //... --features=race
+	@go test -race ./...
 
 # ------------------------------------------------------------------------------
 # LINT
