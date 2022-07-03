@@ -61,8 +61,9 @@ footer {
 }
 
 h1 ~ aside {
+    width: 180px;
     font-size: small;
-    right: 0;
+    right: -240px;
     position: absolute;
 }
 
@@ -79,11 +80,6 @@ body > p, li > p {
 
 li > p {
     margin: 0 1em 0.6em auto;
-}
-
-blockquote q {
-    display: block;
-    font-style: oblique;
 }
 
 a {
@@ -132,9 +128,13 @@ sup, sub {
     line-height: 0;
 }
 
+blockquote {
+    margin-left: 20px;
+}
+
 blockquote q {
-    line-height: 1.5em;
-    display: inline;
+    font-style: oblique;
+    font-size: small;
 }
 
 /* Override some HighlightJS  styles. */
