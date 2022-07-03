@@ -1,0 +1,194 @@
+<h1>Yubikeys</h1>
+
+<p>Commands for setting up a Yubikey, with GPG key and SSH key using (PIV).</p>
+
+<p>Relies on the following:</p>
+
+<ul>
+    <li><p><a href="https://developers.yubico.com/yubikey-manager/"><code>ykman</code></a></p></li>
+    <li><p><a href="https://gnupg.org/"><code>gnupg</code></a></p></li>
+</ul>
+
+<h2>GPG</h2>
+
+<p>
+    Set up roughly following <a
+        href="https://florin.myip.org/blog/easy-multifactor-authentication-ssh-using-yubikey-neo-tokens">this</a>
+    guide.
+</p>
+
+<pre><code class="language=bash"># Insert key ... duh
+
+# Bring up gpg
+$ gpg --card-edit
+
+# Enter admin mode
+gpg/card> admin
+
+# Set the PIN and admin PIN
+gpg/card> passwd
+
+# Generate a key
+gpg/card> generate
+</code></pre>
+
+<p>Set up the agent:</p>
+
+<pre><code class="language-bash">pinentry-program $PATH_TO/pinentry-mac
+default-cache-ttl 600
+max-cache-ttl 7200
+</code></pre>
+
+<p>Add the following to your profile:</p>
+
+<pre><code class="language-bash">GPG_TTY="$(tty)"
+export GPG_TTY
+gpgconf --launch gpg-agent
+</code></pre>
+
+<h3>Seeding local instance</h3>
+
+<p>Import keys in RAM (e.g. <code>/dev/shm</code>).</p>
+
+<pre><code class="language-bash">$ gpg --import private.key</code></pre>
+
+<p>Export subkeys.</p>
+
+<pre><code class="language-bash">$ gpg --armor --output subkeys.key --export-secret-subkeys $KEY</code></pre>
+
+<p>Remove all secret keys.</p>
+
+<pre><code class="language-bash">$ gpg --delete-secret-keys $KEY</code></pre>
+
+<p>Re-import subkey secret keys.</p>
+
+<pre><code class="language-bash">$ gpg --import subkeys.key</code></pre>
+
+<p>Update the subkey to point at the Yubikey.</p>
+
+<pre><code class="language-bash">$ gpg --expert --edit-key $KEY
+
+gpg> key $NUM
+gpg> keytocard
+</code></pre>
+
+<p>
+    Select signature key. Enter the passphrases to unlock the key, and then
+    enter the Yubikey admin PIN (<code>12345678</code>).
+</p>
+
+<p>Save and exit.</p>
+
+<p>List the secret keys, which should show a pointer to the card for the subkey.</p>
+
+<pre><code class="language-bash">$ gpg --list-secret-keys
+------------------------------
+sec>  ... snip ...
+ssb>  ... snip ...
+</code></pre>
+
+<p>Shred any remaining key material.</p>
+
+<pre><code class="language-bash">$ shred -u $FILE [$FILE ...]</code></pre>
+
+<h2>SSH</h2>
+
+<p>
+    The following generates a new SSH keypair that resides on the key. Adapted
+    from the following:
+</p>
+
+<ul>
+    <li><p>
+        <a
+                href="https://developers.yubico.com/PIV/Guides/SSH_with_PIV_and_PKCS11.html">Using
+            PIV for SSH through PKCS #11 (Official)</a>
+    </p></li>
+    <li><p>
+        <a
+                href="https://blog.snapdragon.cc/2019/04/27/using-a-yubikey-to-secure-ssh-on-macos/">Using
+            a Yubikey to Secure SSH on macOS</a>
+    </p></li>
+    <li><p>
+        <a
+                href="https://ruimarinho.gitbooks.io/yubikey-handbook/content/ssh/authenticating-ssh-with-piv-and-pkcs11-client/">Authenticating
+            SSH with PIV and PKCS#11 (client)</a>
+    </p></li>
+</ul>
+
+<p>
+    Ensure that <a
+        href="https://developers.yubico.com/yubico-piv-tool/Releases/"><code>yubico-piv-tool</code></a>
+    is installed.
+</p>
+
+<p>Ensure <a href=">https://github.com/OpenSC/OpenSC/"><code>opensc</code></a> is installed.</p>
+
+<p>
+    Create a volume in memory to use for temporarily storing the key material
+    (see <a href="./ramdisk"><code>ramdisk</code></a>).
+</p>
+
+<pre><code class="language-bash"># Switch into the ramdisk
+$ cd /volumes/secure
+$ umask 077
+
+# Create a public key.
+# Enter the management key when prompted.
+# Default: 010203040506070801020304050607080102030405060708
+$ yubico-piv-tool \
+  -a generate \
+  -s 9a \
+  -k \
+  --pin-policy=once \
+  --touch-policy=always \
+  --algorithm=ECCP256 \
+  -o public.pem
+
+
+# Create a self-signed certificate
+# Enter the PIN when prompted, then tap the key.
+$ yubico-piv-tool \
+  -a verify-pin \
+  -a selfsign-certificate \
+  -s 9a \
+  -S '/CN=ssh/' \
+  --valid-days=365 \
+  -i public.pem \
+  -o cert.pem
+
+# Import the certificate
+# Enter the management key when prompted.
+$ yubico-piv-tool -k -a import-certificate -s 9a -i cert.pem
+</code></pre>
+
+<p>Confirm that they key has been added:</p>
+
+<pre><code class="language-bash">$ yubico-piv-tool -a status</code></pre>
+
+<p>
+    At this point, the SSH key should be loaded on the Yubikey. Fetch the public
+    key:
+</p>
+
+<pre><code class="language-bash">$ ssh-keygen -D $HOME/.nix-profile/lib/opensc-pkcs11.so -e</code></pre>
+
+<p>
+    Note that the path to the <code>.so</code> file may differ, based on the
+    setup. The above is based on using Nix.
+</p>
+
+<p>Add the key to the local `ssh-agent`:</p>
+
+<pre><code class="language-bash">$ _path=$(readlink $HOME/.nix-profile/lib/opensc-pkcs11.so) \
+  ssh-add -s "$_path"
+</code></pre>
+
+<p>
+    Note that the path must match the value that has been whitelisted on the
+    <code>ssh-agent</code> via the <code>-P</code> flag.
+</p>
+
+<p>Confirm the key has been added:</p>
+
+<pre><code class="language-bash">$ ssh-add -L</code></pre>
