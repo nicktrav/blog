@@ -1,0 +1,71 @@
+address: 0.0.0.0:3000
+
+templates: ./templates
+
+index:
+  template: index.html.tpl
+
+posts:
+  template: post.html.tpl
+  pages:
+    - url: /posts/preamble
+      file: ./posts/20170527-preamble.html
+      template: post.html.tpl
+      meta:
+        title: Preamble
+        date: May 27, 2017
+    - url: /posts/up-and-running
+      file: ./posts/20170527-up-and-running.html
+      template: post.html.tpl
+      meta:
+        title: Up and Running
+        date: May 27, 2017
+    - url: /posts/kubernetes
+      file: ./posts/20170604-kubernetes.html
+      template: post.html.tpl
+      meta:
+        title: Kubernetes
+        date: June 6, 2017
+    - url: /posts/configmaps-secrets-initcontains
+      file: ./posts/20190126-configmaps-secrets-initcontainers.html
+      template: post.html.tpl
+      meta:
+        title: Configmaps, Secrets, Initcontainers
+        date: January 26, 2019
+    - url: /posts/java-classpath-ordering-and-containers
+      file: ./posts/20200404-java-classpath-ordering-and-containers.html
+      template: post.html.tpl
+      meta:
+        title: Java classpaths, containers and Kubernetes
+        date: April 4, 2020
+    - url: /posts/proc-mem
+      file: ./posts/20200412-proc-mem.html
+      template: post.html.tpl
+      meta:
+        title: Reading process memory
+        date: April 12, 2020
+    - url: /posts/crypto-crashing-curl
+      file: ./posts/20201019-crypto-crashing-curl.html
+      template: post.html.tpl
+      meta:
+        title: Crypto Crashing Curl
+        date: October 19, 2020
+
+useful:
+  template: useful.html.tpl
+  pages:
+    - url: /useful
+      file: ./useful/index.html
+      template: useful.html.tpl
+      meta:
+        title: Useful
+    - url: /useful/ramdisk
+      file: ./useful/ramdisk.html
+      template: useful.html.tpl
+      meta:
+        title: Ramdisk
+    - url: /useful/yubikeys
+      file: ./useful/yubikeys.html
+      template: useful.html.tpl
+      meta:
+        title: Yubikeys

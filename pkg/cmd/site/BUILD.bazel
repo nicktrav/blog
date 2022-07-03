@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "site_lib",
+    srcs = [
+        "main.go",
+        "root.go",
+        "run.go",
+    ],
+    importpath = "github.com/nicktrav/site/pkg/cmd/site",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//pkg/internal/content",
+        "@com_github_spf13_cobra//:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "site",
+    embed = [":site_lib"],
+    visibility = ["//visibility:public"],
+)

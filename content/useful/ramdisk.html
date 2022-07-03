@@ -1,0 +1,11 @@
+<h1>Ramdisk</h1>
+
+<p>Use the following to create a 1MB RAM-backed mount:</p>
+
+<pre><code>_size=2048
+$ diskutil erasevolume HFS+ secure $(hdiutil attach -nobrowse -nomount ram://$_size)
+</code></pre>
+
+<p>Unmount:</p>
+
+<pre><code>$ diskutil eject /Volumes/RAM\ Disk/</code></pre>

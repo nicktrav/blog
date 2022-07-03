@@ -10,7 +10,7 @@ all: build test lint
 
 DIR := ${CURDIR}
 
-build_dir := $(DIR)/bazel-bin/cmd/site/site_
+build_dir := $(DIR)/bazel-bin/pkg/cmd/site/site_/
 
 bin/:
 	@mkdir -p $@
@@ -33,11 +33,11 @@ build-docker-deploy:
 
 .PHONY: run
 run: build
-	@$(build_dir)/site run --config config.yaml
+	@$(build_dir)/site run --manifest ./content/manifest.yaml
 
 .PHONY: run-docker
 run-docker: build-docker
-	@docker run --rm -it --network=host site run --config config.yaml
+	@docker run --rm -it -p 3000:3000 site run --manifest ./content/manifest.yaml
 
 # ------------------------------------------------------------------------------
 # TEST
