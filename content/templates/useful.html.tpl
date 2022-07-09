@@ -5,15 +5,18 @@
     {{ import "_styles.html.tpl" }}
     <base target="_blank">
 </head>
+<body>
+<div id="topnav"></div>
+<main>
 <header>
     <a href="/" target="_self">Nick Travers</a>
     <aside></aside>
 </header>
-<body>
 {{ .HTML }}
 </body>
 <footer>
     <a href="/" target="_self">Nick Travers</a>
     <aside></aside>
 </footer>
+</main>
 </html>

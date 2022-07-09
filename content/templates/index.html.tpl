@@ -4,18 +4,20 @@
     <title>nicktrave.rs</title>
     {{ import "_styles.html.tpl" }}
 </head>
-<header>
-    <a href="/" target="_self">Nick Travers</a>
-    <aside></aside>
-</header>
 <body>
-<h2>Posts</h2>
+<div id="topnav"></div>
+<main>
+<header>
+  <a href="/" target="_self">Nick Travers</a>
+  <aside></aside>
+</header>
+<h1>Posts</h1>
 <ul>
   {{ range $page := .Posts }}
   <li><p><a href="{{ $page.URL }}">{{ $page.Name }}</a> - <i>{{ $page.Date }}</i></p></li>
   {{ end }}
 </ul>
-<h2>Useful</h2>
+<h1>Useful</h1>
 <p>
     Stuff in here is just a random collection of things that I've picked up
     along the way, inspired by Reddit's <a
@@ -30,5 +32,6 @@
   <li><p><a href="{{ $page.URL }}">{{ $page.Name }}</a></p></li>
   {{ end }}
 </ul>
+</main>
 </body>
 </html>

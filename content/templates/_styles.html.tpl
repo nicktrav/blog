@@ -4,3 +4,11 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
 <link rel="stylesheet" href="/static/stylesheets/main.css" />
 <script>hljs.highlightAll();</script>
+<script defer>
+  document.addEventListener('DOMContentLoaded', function() {
+    var hostname = window.location.hostname;
+    if (hostname.startsWith("staging.") || hostname.startsWith("localhost")) {
+      document.getElementById("topnav").style.height = "0.5em";
+    }
+  }, false);
+</script>
