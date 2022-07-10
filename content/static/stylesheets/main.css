@@ -84,7 +84,7 @@ h1 ~ aside {
     margin-bottom: 2em;
 }
 
-body > p, li > p {
+main > p, li > p {
     line-height: 1.4em;
     text-align: justify;
     text-justify: auto;
@@ -118,7 +118,7 @@ textarea {
     font-size: 100%;
 }
 
-body > pre {
+main > pre {
     border-left: solid 2px #ccc;
     padding-left: 18px;
     padding-top: 0;
