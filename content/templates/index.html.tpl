@@ -5,7 +5,7 @@
     {{ import "_styles.html.tpl" }}
 </head>
 <body>
-<div id="topnav"></div>
+<div id="topbar"></div>
 <main>
 <header>
   <a href="/" target="_self">Nick Travers</a>

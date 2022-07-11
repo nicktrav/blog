@@ -8,7 +8,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     var hostname = window.location.hostname;
     if (hostname.startsWith("staging.") || hostname.startsWith("localhost")) {
-      document.getElementById("topnav").style.height = "0.5em";
+      document.getElementById("topbar").style.height = "0.5em";
     }
   }, false);
 </script>
