@@ -1,0 +1,30 @@
+<h1>Intellij</h1>
+
+<blockquote>Various useful tidbits for Intellij and other Jetbrains
+products.</blockquote>
+
+<h2>Clion - run / debug steals cursor focus</h2>
+
+<p>This one trips me up every time, as it's not really an issue with Clion
+itself, rather it's how the <a
+href="https://github.com/intellij-rust/intellij-rust">intellij-rust</a>
+defaults work. When running or debugging a test (or the binary) from the IDE,
+the editor steals focus from the window with the code, and one either has to
+use the mouse, or some other combination of shortcuts to return to the code.
+This disrupts your "flow". Annoying.</p>
+
+<p>To fix this, one must configure the <i>Cargo Run/Debug template</i> to not
+steal focus. Open the test / run configuration window ("Edit
+configurations..."). In the bottom left, select "Edit configuration
+templates...". Select "Cargo". <i>Uncheck</i> "Activate tool window" (at the
+bottom). Hit "Apply", then "OK".</p>
+
+<p>One should also remove all of the existing configurations, as they'll most
+likely have the default behavior associated with them.</p>
+
+<p>Now, when you run / debug a test / binary for the first time, your
+configuration will not steal focus.</p>
+
+<p>At the time of writing, there's an <a
+  href="https://github.com/intellij-rust/intellij-rust/issues/3557">open issue
+ about this on the plugin's GitHub page</a>.</p>

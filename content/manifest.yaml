@@ -54,6 +54,11 @@ posts:
 useful:
   template: useful.html.tpl
   pages:
+    - url: /useful/intellij
+      file: ./useful/intellij.html
+      template: useful.html.tpl
+      meta:
+        title: Intellij
     - url: /useful/ramdisk
       file: ./useful/ramdisk.html
       template: useful.html.tpl
