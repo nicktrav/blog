@@ -1,11 +1,11 @@
 <h1>Yubikeys</h1>
 
-<p>Commands for setting up a Yubikey, with GPG key and SSH key using (PIV).</p>
+<p>Commands for setting up a Yubikey, with GPG key, SSH key, and macOS login.</p>
 
 <p>Relies on the following:</p>
 
 <ul>
-    <li><p><a href="https://developers.yubico.com/yubikey-manager/"><code>ykman</code></a></p></li>
+    <li><p><a href="https://developers.yubico.com/yubikey-manager/"><code>ykman</code></a> (CLI for managing YubiKey)</p></li>
     <li><p><a href="https://gnupg.org/"><code>gnupg</code></a></p></li>
 </ul>
 
@@ -94,8 +94,61 @@ ssb>  ... snip ...
 <h2>SSH</h2>
 
 <p>
-    The following generates a new SSH keypair that resides on the key. Adapted
-    from the following:
+    The simplest way to set up SSH with a YubiKey is using FIDO2 resident keys.
+    This stores the private key directly on the YubiKey, with no need for PIV,
+    OpenSC, or PKCS#11. Requires OpenSSH 8.2+ and a YubiKey with firmware 5.2.3+.
+</p>
+
+<p>
+    Set a FIDO2 PIN on the key if you haven't already (you'll only need to do
+    this once):
+</p>
+
+<pre><code class="language-bash">$ ykman fido access change-pin</code></pre>
+
+<p>Generate a resident key on the YubiKey:</p>
+
+<pre><code class="language-bash"># The -O resident flag stores the key on the YubiKey itself, so it can
+# be loaded on any machine with ssh-add -K.
+# The -O application=ssh:yourname lets you distinguish multiple resident
+# keys on the same YubiKey.
+$ ssh-keygen -t ed25519-sk -O resident -O application=ssh:yourname</code></pre>
+
+<p>
+    This will create <code>~/.ssh/id_ed25519_sk</code> and
+    <code>~/.ssh/id_ed25519_sk.pub</code>. Add the public key to GitHub,
+    servers, etc.
+</p>
+
+<p>Load the key from the YubiKey into your SSH agent:</p>
+
+<pre><code class="language-bash">$ ssh-add -K</code></pre>
+
+<p>
+    Each SSH operation will require a physical touch of the YubiKey. This is a
+    security feature of FIDO2 and cannot be disabled when loading keys via
+    <code>ssh-add -K</code>.
+</p>
+
+<p>Confirm the key has been added:</p>
+
+<pre><code class="language-bash">$ ssh-add -L</code></pre>
+
+<p>
+    The nice thing about resident keys is portability. On a new machine, just
+    run <code>ssh-add -K</code> with the YubiKey inserted, and the key is
+    available immediately, with no need to copy key files around.
+</p>
+
+<h3>SSH (legacy PIV method)</h3>
+
+<details>
+<summary>Click to expand the older PIV/PKCS#11 approach</summary>
+
+<p>
+    The following generates a new SSH keypair that resides on the key using PIV.
+    This method requires <code>opensc</code> and is more complex, but allows
+    disabling the touch requirement. Adapted from the following:
 </p>
 
 <ul>
@@ -117,12 +170,9 @@ ssb>  ... snip ...
 </ul>
 
 <p>
-    Ensure that <a
-        href="https://developers.yubico.com/yubico-piv-tool/Releases/"><code>yubico-piv-tool</code></a>
-    is installed.
+    Ensure that <code>opensc</code> and <code>yubico-piv-tool</code> are
+    installed.
 </p>
-
-<p>Ensure <a href=">https://github.com/OpenSC/OpenSC/"><code>opensc</code></a> is installed.</p>
 
 <p>
     Create a volume in memory to use for temporarily storing the key material
@@ -145,7 +195,6 @@ $ yubico-piv-tool \
   --algorithm=ECCP256 \
   -o public.pem
 
-
 # Create a self-signed certificate
 # Enter the PIN when prompted, then tap the key.
 $ yubico-piv-tool \
@@ -162,7 +211,7 @@ $ yubico-piv-tool \
 $ yubico-piv-tool -k -a import-certificate -s 9a -i cert.pem
 </code></pre>
 
-<p>Confirm that they key has been added:</p>
+<p>Confirm that the key has been added:</p>
 
 <pre><code class="language-bash">$ yubico-piv-tool -a status</code></pre>
 
@@ -178,7 +227,7 @@ $ yubico-piv-tool -k -a import-certificate -s 9a -i cert.pem
     setup. The above is based on using Nix.
 </p>
 
-<p>Add the key to the local `ssh-agent`:</p>
+<p>Add the key to the local <code>ssh-agent</code>:</p>
 
 <pre><code class="language-bash">$ _path=$(readlink $HOME/.nix-profile/lib/opensc-pkcs11.so) \
   ssh-add -s "$_path"
@@ -192,3 +241,56 @@ $ yubico-piv-tool -k -a import-certificate -s 9a -i cert.pem
 <p>Confirm the key has been added:</p>
 
 <pre><code class="language-bash">$ ssh-add -L</code></pre>
+
+</details>
+
+<h2>macOS Login</h2>
+
+<p>
+    You can use the YubiKey's PIV smart card to unlock your Mac at the lock
+    screen. This uses a certificate in PIV slot 9a (Authentication), which is
+    separate from the FIDO2 SSH key above.
+</p>
+
+<p>
+    Ensure <code>ykman</code> is installed. Generate a key and certificate in
+    PIV slot 9a:
+</p>
+
+<pre><code class="language-bash"># Generate a key in the authentication slot.
+$ ykman piv keys generate --algorithm ECCP256 9a public.pem
+
+# Create a self-signed certificate (10 years to avoid frequent renewal).
+# Enter the PIV PIN when prompted (default: 123456).
+$ ykman piv certificates generate --subject "CN=yourname" --valid-days 3650 9a public.pem
+
+# Clean up the public key file.
+$ rm public.pem</code></pre>
+
+<p>Pair the YubiKey with your macOS user account:</p>
+
+<pre><code class="language-bash"># List unpaired smart card identities. Copy the hash.
+$ sc_auth identities
+
+# Pair the key with your user.
+$ sudo sc_auth pair -h &lt;hash&gt; -u $(whoami)</code></pre>
+
+<p>
+    Lock your screen (Ctrl+Cmd+Q) and unlock with the YubiKey by entering your
+    PIV PIN. Set up a second YubiKey the same way as a backup.
+</p>
+
+<p>
+    If your PIV PIN gets blocked (3 wrong attempts), unblock it with the PUK
+    (default: <code>12345678</code>):
+</p>
+
+<pre><code class="language-bash">$ ykman piv access unblock-pin</code></pre>
+
+<p>
+    It's a good idea to change the default PIN, PUK, and management key:
+</p>
+
+<pre><code class="language-bash">$ ykman piv access change-pin
+$ ykman piv access change-puk
+$ ykman piv access change-management-key</code></pre>
